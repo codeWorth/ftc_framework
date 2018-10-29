@@ -15,8 +15,8 @@ import org.firstinspires.ftc.team7316.util.Hardware;
 public class GyroWrapper {
 
     private BNO055IMU gyro;
-
-    private double currentHeading = 0.0;
+    private double currentYaw = 0.0;
+    private GyroAngles lastAngles;
 
     public GyroWrapper(BNO055IMU gyro) {
         this.gyro = gyro;
@@ -24,39 +24,36 @@ public class GyroWrapper {
 
 
     public GyroAngles angles() {
-        double head = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle * -1 - currentHeading;
+        double yaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
+
+        // https://www.desmos.com/calculator/6lhyvqzpbh
+        // Converts from yaw to heading, where 0 = currentYaw, and range is -180 to 180
+        double head = yaw - currentYaw + 180;
+        if (head > 180) {
+            head -= 360;
+        } else if (head < -180) {
+            head += 360;
+        }
+        head *= -1;
+
         double pit = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double roll = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
-        return new GyroAngles(head, pit, roll);
+
+        lastAngles = new GyroAngles(head, pit, roll);
+        return lastAngles;
     }
 
     /**
-     * Turning right is negative so it's just multiplied by -1
-     */
-    public double getHeading() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle * -1 - currentHeading;
-    }
-
-    public double getPitch() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-    }
-
-    public double getRoll() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
-    }
-
-    /**
-     * Sets the robot's current physical heading to zero
+     * Sets the robot's current heading to zero
      */
     public void resetHeading() {
-        currentHeading = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle * -1;
+        currentYaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
     }
 
     public void logAngles() {
-        Orientation o = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-        Hardware.log("gyro x-axis", o.firstAngle);
-        Hardware.log("gyro y-axis", o.secondAngle);
-        Hardware.log("gyro z-axis", o.thirdAngle);
+        Hardware.log("heading", lastAngles.heading);
+        Hardware.log("pitch", lastAngles.pitch);
+        Hardware.log("roll", lastAngles.roll);
     }
 
 }

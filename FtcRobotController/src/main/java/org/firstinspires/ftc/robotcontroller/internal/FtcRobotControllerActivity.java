@@ -133,8 +133,8 @@ import ftc.vision.SimpleFrameGrabber;
 public class FtcRobotControllerActivity extends Activity
 {
 
-  static final int FRAME_WIDTH_REQUEST = 176;
-  static final int FRAME_HEIGHT_REQUEST = 144;
+  static final int FRAME_WIDTH_REQUEST = 176*4;
+  static final int FRAME_HEIGHT_REQUEST = 144*4;
 
   //manages getting one frame at a time
   public static SimpleFrameGrabber frameGrabber = null;
