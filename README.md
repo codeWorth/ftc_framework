@@ -1,3 +1,6 @@
+## Iron Panthers FTC
+This github repo is forked off of codeWorth's ftc_framework repo, which itself is forked off of ftc_app. As of right now the ftc_framework repo does not have new ftclib code that is ready to work, but will in the near future. This repo will hold all of this team's FTC code. Each branch is a different year of code. It seemed like too much work to get FTC-2015 onward onto this repo, so all FTC code goes in this repo starting now.
+
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
