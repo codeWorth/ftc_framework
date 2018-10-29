@@ -26,7 +26,7 @@ public class Constants {
     public static final double DRIVE_P = 0;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
-    public static final double DRIVE_F = 0;
+    public static final double DRIVE_F = 0.00057803468;
 
     /**
      * @param dist inches

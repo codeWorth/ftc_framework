@@ -22,19 +22,27 @@ public class GyroWrapper {
         this.gyro = gyro;
     }
 
+
+    public GyroAngles angles() {
+        double head = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle * -1 - currentHeading;
+        double pit = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double roll = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+        return new GyroAngles(head, pit, roll);
+    }
+
     /**
      * Turning right is negative so it's just multiplied by -1
      */
     public double getHeading() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle * -1 - currentHeading;
+        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle * -1 - currentHeading;
     }
 
     public double getPitch() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 
     public double getRoll() {
-        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
+        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
     }
 
     /**
@@ -50,4 +58,5 @@ public class GyroWrapper {
         Hardware.log("gyro y-axis", o.secondAngle);
         Hardware.log("gyro z-axis", o.thirdAngle);
     }
+
 }
