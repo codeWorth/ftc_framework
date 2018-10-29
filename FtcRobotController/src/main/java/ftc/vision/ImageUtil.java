@@ -10,7 +10,6 @@ import org.opencv.imgproc.Imgproc;
 
 public class ImageUtil {
 
-	
 	/**
 	 * Applys the Core.inRange function to a Mat after accounting for rollover
 	 * on the hsv hue channel.
