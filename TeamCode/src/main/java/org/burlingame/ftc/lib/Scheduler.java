@@ -1,6 +1,7 @@
 package org.burlingame.ftc.lib;
 
 import org.burlingame.ftc.lib.commands.Command;
+import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,14 @@ public class Scheduler {
         commands.add(cmd);
     }
 
+    public void init() {
+        for (Subsystem sub : subsystems) {
+            if (sub.getDefaultCommand() != null) {
+                _add(sub.getDefaultCommand());
+            }
+        }
+    }
+
     public void loop() {
 
         int size = newCommands.size();
@@ -66,36 +75,35 @@ public class Scheduler {
                 commands.remove(i);
                 for (Subsystem sub : cmd.requiredSubsystems) {
                     sub.currentCommandEnded();
-                    add(sub.currentCommand());
+                    if (sub.currentCommand() == null) {
+                        if (sub.getDefaultCommand() != null) {
+                            add(sub.getDefaultCommand());
+                        }
+                    } else {
+                        add(sub.currentCommand());
+                    }
                 }
                 i--;
             }
         }
-
-        for (Subsystem sub : subsystems) {
-            if (sub.currentCommand == null && sub.getDefaultCommand() != null) {
-                _add(sub.getDefaultCommand());
-            }
-        }
-
     }
 
     public void endAuto() {
-        newCommands.clear();
-        for (Command cmd : commands) {
-            cmd.interrupted();
-        }
-        commands.clear();
+        wipe();
         inTeleop = true;
     }
 
     public void endTeleop() {
+        wipe();
+        inTeleop = false;
+    }
+
+    public void wipe() {
         newCommands.clear();
         for (Command cmd : commands) {
             cmd.interrupted();
         }
         commands.clear();
-        inTeleop = false;
     }
 
 }

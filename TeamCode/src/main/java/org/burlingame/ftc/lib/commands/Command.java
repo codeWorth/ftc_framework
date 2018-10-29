@@ -1,6 +1,6 @@
 package org.burlingame.ftc.lib.commands;
 
-import org.burlingame.ftc.lib.Subsystem;
+import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ public abstract class Command {
     public ArrayList<Subsystem> requiredSubsystems = new ArrayList<>();
     public boolean isInited;
     private boolean cancelled;
-    private CommandDelegate parent;
+    public CommandDelegate parent;
 
     protected abstract void execute();
     public boolean run() {
@@ -57,7 +57,7 @@ public abstract class Command {
      * @return True if this command is done now, false if it might continue later
      */
     public boolean pause() {
-        if (this.parent != null && this.parent.shouldContinue()) {
+        if (this.parent != null && this.parent.shouldContinue(this)) {
             interrupted();
             return false;
         } else {
@@ -70,6 +70,9 @@ public abstract class Command {
     public abstract void end();
     public void _end() {
         end();
+        if (this.parent != null) {
+            this.parent.commandEnded(this);
+        }
         isInited = false;
     }
 

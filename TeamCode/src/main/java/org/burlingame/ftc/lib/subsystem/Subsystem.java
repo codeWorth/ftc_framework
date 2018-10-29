@@ -1,8 +1,9 @@
-package org.burlingame.ftc.lib;
+package org.burlingame.ftc.lib.subsystem;
 
+import org.burlingame.ftc.lib.Scheduler;
 import org.burlingame.ftc.lib.commands.Command;
 
-import java.util.Stack;
+import java.util.ArrayList;
 
 public abstract class Subsystem {
 
@@ -10,28 +11,30 @@ public abstract class Subsystem {
     private boolean initializedDefaultCommand_a;
     private Command defaultCommand = null;
 
-    private Stack<Command> currentCommandQueue = new Stack();
+    private ArrayList<Command> currentCommandQueue = new ArrayList<>();
 
     public Command currentCommand() {
-        if (currentCommandQueue.empty()) {
+        if (currentCommandQueue.isEmpty()) {
             return null;
         } else {
-            return currentCommandQueue.peek();
+            return currentCommandQueue.get(0);
         }
     }
 
     public void replaceCurrentCommand(Command newCmd) {
         boolean oldCommandDone = this.currentCommand().pause();
-        if (oldCommandDone) {
-            this.currentCommandQueue.pop();
+        if (oldCommandDone && !this.currentCommandQueue.isEmpty()) {
+            this.currentCommandQueue.remove(0);
         }
-        this.currentCommandQueue.add(newCmd);
+        this.currentCommandQueue.add(0, newCmd);
     }
 
     public void currentCommandEnded() {
-        this.currentCommandQueue.pop();
-        while (!this.currentCommand().canResume() || this.currentCommand()._isFinished()) {
-            this.currentCommandQueue.pop();
+        if (!this.currentCommandQueue.isEmpty()) {
+            this.currentCommandQueue.remove(0);
+        }
+        while (!currentCommandQueue.isEmpty() && (!this.currentCommand().canResume() || this.currentCommand()._isFinished())) {
+            this.currentCommandQueue.remove(0);
         }
     }
 
