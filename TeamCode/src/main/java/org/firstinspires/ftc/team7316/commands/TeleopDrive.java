@@ -77,12 +77,12 @@ public class TeleopDrive extends Command {
         if(centerset>centerTarget){
             centerset=centerTarget;
         }
-        if (fast==false){
+        if (!fast){
             leftset*=Constants.SLOW_SPEED;
             rightset*=Constants.SLOW_SPEED;
             centerset*=Constants.SLOW_SPEED;
         }
-        Subsystems.instance.driveSubsystem.driveMotorSet(-leftset,rightset);
+        Subsystems.instance.driveSubsystem.driveMotorSet(leftset,rightset);
         Subsystems.instance.driveSubsystem.strafeMotorSet(centerset);
     }
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team7316.util;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -46,6 +47,7 @@ public class Hardware {
      */
     public Hardware (HardwareMap map) {
         leftmotor = map.dcMotor.get(leftMotorName);
+        leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);

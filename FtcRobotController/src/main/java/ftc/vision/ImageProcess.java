@@ -148,7 +148,7 @@ public class ImageProcess implements Runnable {
 			}
 			
 			latch = new CountDownLatch(1);
-			System.out.println("Processing image");
+//			System.out.println("Processing image");
 			
 			lastProcessed = processImage(sourceImg);
 			if (lastProcessed != null) {

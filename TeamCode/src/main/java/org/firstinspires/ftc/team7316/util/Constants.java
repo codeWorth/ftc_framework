@@ -19,14 +19,25 @@ public class Constants {
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * Math.PI;
     public static final double SLOW_SPEED = 0.6;
 
-    public static final double AUTO_DEADZONE = 0.15;
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
-    public static final double ACCELERATION_SPEED=0.2;
+    public static final double ACCELERATION_SPEED = 0.2;
 
     public static final double DRIVE_P = 0;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
     public static final double DRIVE_F = 0.00057803468;
+    public static final double DRIVE_K = 1730; // 1730 ticks / 1 power
+
+    private static final double ROBOT_RADIUS = 9; // inches
+    public static final double TURN_P = 0;
+    public static final double TURN_I = 0;
+    public static final double TURN_D = 0;
+    public static final double TURN_F = 0;
+
+    public static final double MAX_TICKS_SPEED = 1500; // ticks per second
+    public static final double MAX_TICKS_ACCEL = 1500; // ticks per second per second
+    public static final double MAX_RADIANS_SPEED = 60; // radians per second
+    public static final double MAX_RADIANS_ACCEL = 60; // radians per second per second
 
     /**
      * @param dist inches

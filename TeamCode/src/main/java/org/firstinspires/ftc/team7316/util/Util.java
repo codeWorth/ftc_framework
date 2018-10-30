@@ -26,14 +26,6 @@ public class Util {
         return (b2 - a2) * (x - a1) / (b1 - a1) + a2;
     }
 
-    public static double deadzoneChange(double x) {
-        if (x < 0) {
-            return map(x, -1, 0, -1, -Constants.AUTO_DEADZONE);
-        } else {
-            return map(x, 0, 1, Constants.AUTO_DEADZONE, 1);
-        }
-    }
-
     public static double modBueno(double a, double b) {
         if (a > 0) {
             return a % b;
