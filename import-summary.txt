@@ -8,8 +8,8 @@ due to bugs, placing projects in directories containing spaces in the
 path, or characters like ", ' and &, have had issues. We're working to
 eliminate these bugs, but to save yourself headaches you may want to
 move your project to a location where this is not a problem.
-/Users/andrew/Code Github/ftc_framework
-                  -                    
+/Users/andrew/Code Github/ftc_2018
+                  -               
 
 Ignored Files:
 --------------
@@ -17,6 +17,7 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
+* .DS_Store
 * javadoc/
 * javadoc/allclasses-frame.html
 * javadoc/allclasses-noframe.html
@@ -237,6 +238,9 @@ Eclipse projects. Here's how the projects were restructured:
 * lint.xml => openCVLibrary343/lint.xml
 * res/ => openCVLibrary343/src/main/res/
 * src/ => openCVLibrary343/src/main/java/
+* src/.DS_Store => openCVLibrary343/src/main/resources/.DS_Store
+* src/org/.DS_Store => openCVLibrary343/src/main/resources/org/.DS_Store
+* src/org/opencv/.DS_Store => openCVLibrary343/src/main/resources/org/opencv/.DS_Store
 * src/org/opencv/engine/OpenCVEngineInterface.aidl => openCVLibrary343/src/main/aidl/org/opencv/engine/OpenCVEngineInterface.aidl
 
 Next Steps:

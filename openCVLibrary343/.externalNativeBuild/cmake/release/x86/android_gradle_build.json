@@ -1,0 +1,46 @@
+
+{
+	"buildFiles" : [ "/Users/andrew/Code Github/ftc_2018/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"/Users/andrew/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/andrew/Code\\ Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/x86 --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"native-lib-Release-x86" : 
+		{
+			"abi" : "x86",
+			"artifactName" : "native-lib",
+			"buildCommand" : "/Users/andrew/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/andrew/Code\\ Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/x86 --target native-lib",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=i686-none-linux-android23 --gcc-toolchain=/Users/andrew/Library/Android/sdk/ndk-bundle/toolchains/x86-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/andrew/Library/Android/sdk/ndk-bundle/sysroot  -Dnative_lib_EXPORTS -I../../../../../FtcRobotController/src/main/include -isystem /Users/andrew/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /Users/andrew/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /Users/andrew/Library/Android/sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -std=gnu++11 -O2 -DNDEBUG  -fPIC    -c ",
+					"src" : "/Users/andrew/Code Github/ftc_2018/FtcRobotController/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/Users/andrew/Code Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/x86"
+				}
+			],
+			"output" : "/Users/andrew/Code Github/ftc_2018/openCVLibrary343/build/intermediates/cmake/release/obj/x86/libnative-lib.so",
+			"toolchain" : "4360017167164639656"
+		},
+		"opencv-lib-Release-x86" : 
+		{
+			"abi" : "x86",
+			"artifactName" : "opencv-lib",
+			"buildType" : "release",
+			"output" : "/Users/andrew/Code Github/ftc_2018/FtcRobotController/src/main/jniLibs/armeabi-v7a/libopencv_core.a",
+			"toolchain" : "4360017167164639656"
+		}
+	},
+	"toolchains" : 
+	{
+		"4360017167164639656" : 
+		{
+			"cCompilerExecutable" : "/Users/andrew/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/andrew/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}
