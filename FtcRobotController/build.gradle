@@ -11,6 +11,7 @@ android {
         targetSdkVersion 23
     }
 
+    compileSdkVersion 23
 
     compileSdkVersion 23
 
