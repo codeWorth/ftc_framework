@@ -127,10 +127,10 @@ public class PID {
     /**
      * Calculates the actual output to the motors
      */
-    public double getPower(double error) {
+    public double getPower(double error, double dtime) {
         this.sum += error;
 
-        double delta = error - this.previous;
+        double delta = (error - this.previous) / dtime;
         this.previous = error;
 
         out = p * error + i * sum + d * delta + f * getPredictedSpeed(timer.seconds());

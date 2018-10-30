@@ -1,5 +1,0 @@
-# ninja log v5
-0	1022	0	CMakeFiles/native-lib.dir/FtcRobotController/src/main/cpp/native-lib.cpp.o	2b87b021aef85014
-1023	1118	0	../../../../build/intermediates/cmake/debug/obj/x86/libnative-lib.so	91f2c8feb57b80c0
-1	991	0	CMakeFiles/native-lib.dir/FtcRobotController/src/main/cpp/native-lib.cpp.o	dfceb3fd364e1a4b
-991	1065	0	../../../../build/intermediates/cmake/debug/obj/x86/libnative-lib.so	91f2c8feb57b80c0

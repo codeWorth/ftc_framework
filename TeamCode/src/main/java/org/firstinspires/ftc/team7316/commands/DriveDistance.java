@@ -6,6 +6,7 @@ import org.firstinspires.ftc.team7316.util.subsystems.Subsystems;
 
 public class DriveDistance extends Command {
     int ticks;
+    long lastTime;
     public DriveDistance(int ticks){
         this.ticks=ticks;
     }
@@ -18,12 +19,15 @@ public class DriveDistance extends Command {
         else {
             Subsystems.instance.driveSubsystem.setMotorPaths((new CombinedPath.LongitudalTrapezoid(0,ticks,-1500,-1500)));
         }
-
+        lastTime = System.currentTimeMillis();
     }
 
     @Override
     public void loop(){
-        Subsystems.instance.driveSubsystem.driveWithPID();
+        long dMilis = System.currentTimeMillis() - lastTime;
+        lastTime = System.currentTimeMillis();
+
+        Subsystems.instance.driveSubsystem.driveWithPID((double)dMilis / 1000.0);
     }
 
     @Override

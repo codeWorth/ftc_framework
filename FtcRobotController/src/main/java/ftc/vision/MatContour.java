@@ -1,5 +1,9 @@
 package ftc.vision;
 
+import android.util.Log;
+
+import com.qualcomm.robotcore.util.Hardware;
+
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -37,6 +41,9 @@ public class MatContour implements Comparable<MatContour> {
 		
 		MatOfInt hullIs = new MatOfInt(); // The convex hull is stored as a list of indecies into the original contour
 		Imgproc.convexHull(mat, hullIs); // Generates the convex hull. Look up convex hull online (it's the outline of a contour)
+
+		Log.d("------HULL CONTOUR-----", "FOUND");
+
 		Point[] contPoints = mat.toArray(); // points from the contour
 		int[] contIs = hullIs.toArray(); // indecies from the hull
 		Point[] points = new Point[hullIs.rows()]; // the empty list we will be putting points into

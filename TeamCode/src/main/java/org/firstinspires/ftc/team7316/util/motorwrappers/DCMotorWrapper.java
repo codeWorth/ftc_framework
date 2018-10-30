@@ -39,12 +39,12 @@ public class DCMotorWrapper {
         return pid.getTargetTicksCurrent() - motor.getCurrentPosition();
     }
 
-    public void setPowerPID() {
+    public void setPowerPID(double dTime) {
         if (!pid.usingPath()) {
             pid.updateTargetTicksCurrent();
         }
 
-        double pow = pid.getPower(getError());
+        double pow = pid.getPower(getError(), dTime);
 
         if (Math.abs(pow) > maxPower) {
             pow = (pow > 0) ? maxPower : -maxPower;

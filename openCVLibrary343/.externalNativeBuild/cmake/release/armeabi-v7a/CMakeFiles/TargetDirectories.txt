@@ -1,3 +1,0 @@
-/Users/andrew/Code Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/edit_cache.dir
-/Users/andrew/Code Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-/Users/andrew/Code Github/ftc_2018/openCVLibrary343/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/native-lib.dir

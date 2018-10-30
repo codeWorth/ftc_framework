@@ -24,66 +24,16 @@ public class TeleopDrive extends Command {
 
     @Override
     public void loop() {
-        if(OI.instance.gp1.rightTriggerWrapper.pressedState()){
-            fast= true;
-        }
-        else {
-            fast=false;
-        }
-        leftchange= Hardware.instance.leftmotor.getCurrentPosition()-leftlast;
-        rightchange=Hardware.instance.rightmotor.getCurrentPosition()-rightlast;
-        centerchange=Hardware.instance.centermotor.getCurrentPosition()-centerlast;
-        leftlast=Hardware.instance.leftmotor.getCurrentPosition();
-        rightlast=Hardware.instance.rightmotor.getCurrentPosition();
-        centerlast=Hardware.instance.centermotor.getCurrentPosition();
-        double leftTarget = OI.instance.gp1.left_stick.getY();
-        double rightTarget = OI.instance.gp1.left_stick.getY();
-        leftTarget+=OI.instance.gp1.right_stick.getX();
-        rightTarget-=OI.instance.gp1.right_stick.getX();
-        double centerTarget=OI.instance.gp1.left_stick.getX();
-        if (leftTarget>1){
-            leftTarget=1;
-        }
-        if (leftTarget<-1){
-            leftTarget=-1;
-        }
-        if (rightTarget>1){
-            rightTarget=1;
-        }
-        if (rightTarget<-1){
-            rightTarget=-1;
-        }
-        if (centerTarget>1){
-            centerTarget=1;
-        }
-        if (centerTarget<-1){
-            centerTarget=-1;
-        }
-        if(Math.abs(leftset)<Math.abs(leftTarget)){
-            leftset+=(Math.abs(leftTarget)/leftTarget)* Constants.ACCELERATION_SPEED;
-        }
-        if (Math.abs(rightset)<Math.abs(rightTarget)){
-            rightset+=(Math.abs(rightTarget)/rightTarget)* Constants.ACCELERATION_SPEED;
-        }
-        if (Math.abs(centerset)<Math.abs(centerTarget)){
-            centerset+=(Math.abs(centerTarget)/centerTarget)* Constants.ACCELERATION_SPEED;
-        }
-        if (leftset>leftTarget){
-            leftset=leftTarget;
-        }
-        if (rightset>rightTarget){
-            rightset=rightTarget;
-        }
-        if(centerset>centerTarget){
-            centerset=centerTarget;
-        }
-        if (!fast){
-            leftset*=Constants.SLOW_SPEED;
-            rightset*=Constants.SLOW_SPEED;
-            centerset*=Constants.SLOW_SPEED;
-        }
-        Subsystems.instance.driveSubsystem.driveMotorSet(leftset,rightset);
-        Subsystems.instance.driveSubsystem.strafeMotorSet(centerset);
+//        if(OI.instance.gp1.rightTriggerWrapper.pressedState()){
+//            fast= true;
+//        }
+//        else {
+//            fast=false;
+//        }
+        Hardware.instance.leftmotorWrapper.setPower(OI.instance.gp1.left_stick.getY());
+        Hardware.instance.rightmotorWrapper.setPower(OI.instance.gp1.right_stick.getY());
+
+
     }
 
     @Override

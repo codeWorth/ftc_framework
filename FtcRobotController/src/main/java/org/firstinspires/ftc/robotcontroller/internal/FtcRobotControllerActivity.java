@@ -145,7 +145,6 @@ public class FtcRobotControllerActivity extends Activity
     private CameraBridgeViewBase cameraBridgeViewBase;
 
     void myOnCreate(final TextView outputView){
-        System.loadLibrary("opencv-lib");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -162,52 +161,52 @@ public class FtcRobotControllerActivity extends Activity
             cameraBridgeViewBase.disableView();
         }
     }
+//
+//    void myOnResume(){
+//        if (!OpenCVLoader.initDebug()) {
+//            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+//            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+//        } else {
+//            Log.d(TAG, "OpenCV library found inside package. Using it!");
+//            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+//        }
+//    }
+//
+//    public void myOnDestroy() {
+//        if (cameraBridgeViewBase != null) {
+//            cameraBridgeViewBase.disableView();
+//        }
+//    }
 
-    void myOnResume(){
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
-        } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
-    }
-
-    public void myOnDestroy() {
-        if (cameraBridgeViewBase != null) {
-            cameraBridgeViewBase.disableView();
-        }
-    }
-
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                    Log.i(TAG, "OpenCV Manager Connected");
-                    //from now onwards, you can use OpenCV API
-//          Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
-                    cameraBridgeViewBase.enableView();
-                    break;
-                case LoaderCallbackInterface.INIT_FAILED:
-                    Log.i(TAG, "Init Failed");
-                    break;
-                case LoaderCallbackInterface.INSTALL_CANCELED:
-                    Log.i(TAG, "Install Cancelled");
-                    break;
-                case LoaderCallbackInterface.INCOMPATIBLE_MANAGER_VERSION:
-                    Log.i(TAG, "Incompatible Version");
-                    break;
-                case LoaderCallbackInterface.MARKET_ERROR:
-                    Log.i(TAG, "Market Error");
-                    break;
-                default:
-                    Log.i(TAG, "OpenCV Manager Install");
-                    super.onManagerConnected(status);
-                    break;
-            }
-        }
-    };
+//    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+//        @Override
+//        public void onManagerConnected(int status) {
+//            switch (status) {
+//                case LoaderCallbackInterface.SUCCESS:
+//                    Log.i(TAG, "OpenCV Manager Connected");
+//                    //from now onwards, you can use OpenCV API
+////          Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
+////                    cameraBridgeViewBase.enableView();
+//                    break;
+//                case LoaderCallbackInterface.INIT_FAILED:
+//                    Log.i(TAG, "Init Failed");
+//                    break;
+//                case LoaderCallbackInterface.INSTALL_CANCELED:
+//                    Log.i(TAG, "Install Cancelled");
+//                    break;
+//                case LoaderCallbackInterface.INCOMPATIBLE_MANAGER_VERSION:
+//                    Log.i(TAG, "Incompatible Version");
+//                    break;
+//                case LoaderCallbackInterface.MARKET_ERROR:
+//                    Log.i(TAG, "Market Error");
+//                    break;
+//                default:
+//                    Log.i(TAG, "OpenCV Manager Install");
+//                    super.onManagerConnected(status);
+//                    break;
+//            }
+//        }
+//    };
 
     ////////////// END VISION PROCESSING CODE //////////////
 
@@ -351,7 +350,7 @@ public class FtcRobotControllerActivity extends Activity
         setContentView(R.layout.activity_ftc_controller);
 
         ////////////// START VISION PROCESSING CODE //////////////
-        myOnCreate((TextView) findViewById(R.id.resultText));
+        //myOnCreate((TextView) findViewById(R.id.resultText));
         ////////////// END VISION PROCESSING CODE //////////////
 
         preferencesHelper = new PreferencesHelper(TAG, context);
@@ -468,7 +467,7 @@ public class FtcRobotControllerActivity extends Activity
         super.onResume();
 
         ////////////// START VISION PROCESSING CODE //////////////
-        myOnResume();
+//        myOnResume();
         ////////////// END VISION PROCESSING CODE //////////////
 
         RobotLog.vv(TAG, "onResume()");
@@ -479,7 +478,7 @@ public class FtcRobotControllerActivity extends Activity
         super.onPause();
 
         ////////////// START VISION PROCESSING CODE //////////////
-        myOnPause();
+//        myOnPause();
         ////////////// END VISION PROCESSING CODE //////////////
 
         RobotLog.vv(TAG, "onPause()");
@@ -501,7 +500,7 @@ public class FtcRobotControllerActivity extends Activity
         super.onDestroy();
 
         ////////////// START VISION PROCESSING CODE //////////////
-        myOnDestroy();
+//        myOnDestroy();
         ////////////// END VISION PROCESSING CODE //////////////
 
         RobotLog.vv(TAG, "onDestroy()");
