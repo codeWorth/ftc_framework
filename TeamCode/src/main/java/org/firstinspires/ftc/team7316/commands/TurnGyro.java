@@ -15,6 +15,8 @@ public class TurnGyro extends Command {
     private double lastError;
     private double sumError;
     private long lastTime;
+    private GyroAngles angles;
+    private static final double DEGREES_THRESH = 3;
 
     public TurnGyro(int deltaHeading) {
         // prevents the robot from turning in a stupid way
@@ -49,7 +51,7 @@ public class TurnGyro extends Command {
 
         double degreesPerSec = this.anglePath.getSpeed(seconds);
 
-        GyroAngles angles = Hardware.instance.gyroWrapper.angles();
+        angles = Hardware.instance.gyroWrapper.angles();
         double error = angles.heading - this.anglePath.getPosition(seconds);
         sumError += error;
         double dError = (error - lastError) / dSeconds;
@@ -63,11 +65,12 @@ public class TurnGyro extends Command {
 
     @Override
     public boolean shouldRemove() {
-        return false;
+        return (Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH);
     }
 
     @Override
     protected void end() {
-
+        Hardware.instance.leftmotorWrapper.setPower(0);
+        Hardware.instance.leftmotorWrapper.setPower(0);
     }
 }
