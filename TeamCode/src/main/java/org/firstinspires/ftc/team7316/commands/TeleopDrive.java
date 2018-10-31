@@ -24,15 +24,14 @@ public class TeleopDrive extends Command {
 
     @Override
     public void loop() {
-//        if(OI.instance.gp1.rightTriggerWrapper.pressedState()){
-//            fast= true;
-//        }
-//        else {
-//            fast=false;
-//        }
-        Hardware.instance.leftmotorWrapper.setPower(OI.instance.gp1.left_stick.getY());
-        Hardware.instance.rightmotorWrapper.setPower(OI.instance.gp1.right_stick.getY());
 
+        double forward = -OI.instance.gp1.left_stick.getY();
+        double strafe = OI.instance.gp1.left_stick.getX();
+        double rotate = OI.instance.gp1.right_stick.getX();
+
+        Hardware.instance.leftmotorWrapper.setPower(forward + rotate);
+        Hardware.instance.rightmotorWrapper.setPower(forward - rotate);
+        Hardware.instance.centermotorWrapper.setPower(strafe);
 
     }
 

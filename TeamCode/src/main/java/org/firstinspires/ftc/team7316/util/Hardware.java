@@ -47,14 +47,17 @@ public class Hardware {
      */
     public Hardware (HardwareMap map) {
         leftmotor = map.dcMotor.get(leftMotorName);
-        leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);
+
+        leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        centermotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        climbmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        centermotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         plateServo=map.servo.get(plateServoName);
         BNO055IMU.Parameters gyroParams = new BNO055IMU.Parameters();
         gyroParams.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
