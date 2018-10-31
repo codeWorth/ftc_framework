@@ -48,6 +48,10 @@ public class Hardware {
     public Hardware (HardwareMap map) {
         leftmotor = map.dcMotor.get(leftMotorName);
         leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);
