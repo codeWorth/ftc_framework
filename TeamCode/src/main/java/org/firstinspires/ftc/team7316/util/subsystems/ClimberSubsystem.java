@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team7316.util.subsystems;
 
+import org.firstinspires.ftc.team7316.commands.TeleopClimb;
 import org.firstinspires.ftc.team7316.util.Hardware;
 import org.firstinspires.ftc.team7316.util.commands.Command;
 
@@ -16,7 +17,7 @@ public class ClimberSubsystem extends Subsystem {
 
     @Override
     public Command defaultTeleopCommand() {
-        return null;
+        return new TeleopClimb();
     }
     public void setMotor(double power){
         Hardware.instance.climbmotor.setPower(power);

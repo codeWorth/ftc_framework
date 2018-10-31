@@ -24,7 +24,7 @@ public class GyroWrapper {
 
 
     public GyroAngles angles() {
-        double yaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
+        double yaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         // https://www.desmos.com/calculator/6lhyvqzpbh
         // Converts from yaw to heading, where 0 = currentYaw, and range is -180 to 180
@@ -36,8 +36,8 @@ public class GyroWrapper {
         }
         head *= -1;
 
-        double pit = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        double roll = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+        double pit = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+        double roll = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
 
         lastAngles = new GyroAngles(head, pit, roll);
         return lastAngles;

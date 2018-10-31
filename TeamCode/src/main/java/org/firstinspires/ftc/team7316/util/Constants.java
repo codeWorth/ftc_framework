@@ -22,13 +22,13 @@ public class Constants {
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
     public static final double ACCELERATION_SPEED = 0.2;
 
-    public static final double DRIVE_P = 0.1;
+    public static final double DRIVE_P = 0;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
     public static final double DRIVE_K = 1420; // ticks per 1 power
     public static final double DRIVE_F = 1 / DRIVE_K;
 
-    private static final double ROBOT_RADIUS = 9; // inches
+    private static final double ROBOT_RADIUS = 7; // inches
     public static final double TURN_P = 0;
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
@@ -38,6 +38,12 @@ public class Constants {
     public static final double MAX_TICKS_ACCEL = 1500; // ticks per second per second
     public static final double MAX_DEGREES_SPEED = 60; // degrees per second
     public static final double MAX_DEGREES_ACCEL = 60; // degrees per second per second
+
+    public static int degreesToTicks(int degrees) {
+        double d = (double) degrees;
+        double inches = degrees * Math.PI * ROBOT_RADIUS / 180;
+        return inchesToTicks(inches);
+    }
 
     /**
      * @param dist inches

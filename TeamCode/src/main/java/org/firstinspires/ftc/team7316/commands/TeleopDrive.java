@@ -7,25 +7,16 @@ import org.firstinspires.ftc.team7316.util.input.OI;
 import org.firstinspires.ftc.team7316.util.subsystems.Subsystems;
 
 public class TeleopDrive extends Command {
-    double leftset=0;
-    double rightset=0;
-    double centerset=0;
-    double leftchange=0;
-    double rightchange=0;
-    double centerchange=0;
-    double leftlast=0;
-    double rightlast=0;
-    double centerlast=0;
-    boolean fast;
+
     @Override
     public void init() {
-
+        requires(Subsystems.instance.driveSubsystem);
     }
 
     @Override
     public void loop() {
 
-        double forward = -OI.instance.gp1.left_stick.getY();
+        double forward = OI.instance.gp1.left_stick.getY();
         double strafe = OI.instance.gp1.left_stick.getX();
         double rotate = OI.instance.gp1.right_stick.getX();
 
