@@ -6,7 +6,7 @@ import org.firstinspires.ftc.team7316.commands.DriveDistance;
 import org.firstinspires.ftc.team7316.util.Constants;
 import org.firstinspires.ftc.team7316.util.Scheduler;
 import org.firstinspires.ftc.team7316.util.modes.AutoBaseOpMode;
-@Autonomous
+@Autonomous(name="Auto")
 public class DriveAutoTest extends AutoBaseOpMode {
     @Override
     public void onInit() {
