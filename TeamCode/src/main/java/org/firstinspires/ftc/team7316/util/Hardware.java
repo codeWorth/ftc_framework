@@ -26,6 +26,7 @@ public class Hardware {
     public DcMotor rightmotor;
     public DcMotor centermotor;
     public DcMotor climbmotor;
+    public DcMotor intakemotor;
     public Servo plateServo;
     public BNO055IMU imu;
 
@@ -40,6 +41,7 @@ public class Hardware {
     public final String centerMotorName = "cmotor";
     public final String climbMotorName = "clmotor";
     public final String plateServoName = "bservo";
+    public final String intakeMotorName = "imotor";
     public final String imuname = "gyro";
 
     /**
@@ -50,6 +52,7 @@ public class Hardware {
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);
+        intakemotor = map.dcMotor.get(intakeMotorName);
 
         leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

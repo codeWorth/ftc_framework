@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team7316.util.commands;
 
+import org.firstinspires.ftc.team7316.util.commands.flow.SequentialCommand;
+
 /**
  * Contains all the sequential commands to run
  */

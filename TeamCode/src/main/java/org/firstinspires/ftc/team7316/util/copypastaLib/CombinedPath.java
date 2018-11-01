@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team7316.util.copypastaLib;
 
+import android.util.Log;
+
 /**
  * Created by jerry on 1/9/18.
  */
@@ -147,6 +149,7 @@ public class CombinedPath implements MotionPath {
             p[1] = new LinearDerivativePath(distance - 2.0D * p[0].getTotalDistance(), maxV);
             if(Math.abs(p[0].getTotalDistance()) > Math.abs(distance / 2.0D)) {
                 double newTime = Math.sqrt(distance / a);
+                Log.d("-----PATH PLANNING-----", "Couldn't get to target speed in time");
                 p[0] = new LinearDerivativePath(0.0D, newTime * a, a);
                 p[1] = new Hold(0.0D);
                 p[2] = new LinearDerivativePath(newTime * a, 0.0D, -a);

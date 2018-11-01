@@ -28,7 +28,7 @@ public class GyroWrapper {
 
         // https://www.desmos.com/calculator/6lhyvqzpbh
         // Converts from yaw to heading, where 0 = currentYaw, and range is -180 to 180
-        double head = yaw - currentYaw + 180;
+        double head = yaw - currentYaw;
         if (head > 180) {
             head -= 360;
         } else if (head < -180) {
@@ -39,7 +39,7 @@ public class GyroWrapper {
         double pit = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
         double roll = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
 
-        lastAngles = new GyroAngles(head, pit, roll);
+        lastAngles = new GyroAngles(head, yaw, pit, roll);
         return lastAngles;
     }
 
@@ -48,6 +48,13 @@ public class GyroWrapper {
      */
     public void resetHeading() {
         currentYaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
+    }
+
+    /**
+     * Sets the robot's current heading to zero
+     */
+    public void resetHeading(double angle) {
+        currentYaw = angle;
     }
 
     public void logAngles() {

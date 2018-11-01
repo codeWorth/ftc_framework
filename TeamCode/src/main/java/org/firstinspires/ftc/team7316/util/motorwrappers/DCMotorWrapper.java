@@ -14,6 +14,7 @@ public class DCMotorWrapper {
 
     private DcMotor motor;
     public PID pid;
+    private long lastTicks;
 
     private double maxPower;
 
@@ -44,7 +45,8 @@ public class DCMotorWrapper {
             pid.updateTargetTicksCurrent();
         }
 
-        double pow = pid.getPower(getError(), dTime);
+        double pow = pid.getPower(getError(), dTime, motor.getCurrentPosition(), motor.getCurrentPosition() - lastTicks);
+        lastTicks = motor.getCurrentPosition();
 
         if (Math.abs(pow) > maxPower) {
             pow = (pow > 0) ? maxPower : -maxPower;
@@ -53,7 +55,7 @@ public class DCMotorWrapper {
     }
 
     public boolean completedDistance() {
-        return Math.abs(pid.getTargetTicksFinal() - motor.getCurrentPosition()) < Constants.DISTANCE_ERROR_RANGE_TICKS;
+        return pid.finished() || Math.abs(pid.getTargetTicksFinal() - motor.getCurrentPosition()) < Constants.DISTANCE_ERROR_RANGE_TICKS;
 
     }
 

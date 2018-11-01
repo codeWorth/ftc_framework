@@ -11,12 +11,17 @@ public class Subsystems {
     public static Subsystems instance = null;
 
     public Subsystem[] subsystems;
-    public DriveSubsystem driveSubsystem = new DriveSubsystem();
-    public ClimberSubsystem climberSubsystem=new ClimberSubsystem();
-    public PlateSubsystem plateSubsystem=new PlateSubsystem();
+    public DriveSubsystem driveSubsystem;
+    public ClimberSubsystem climberSubsystem;
+    public PlateSubsystem plateSubsystem;
+    public IntakeSubsystem intakeSubsystem;
 
     private Subsystems () {
-        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem};
+        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem,intakeSubsystem};
+        plateSubsystem=new PlateSubsystem();
+        climberSubsystem=new ClimberSubsystem();
+        driveSubsystem = new DriveSubsystem();
+        intakeSubsystem = new IntakeSubsystem();
     }
 
     public static void createSubsystems() {

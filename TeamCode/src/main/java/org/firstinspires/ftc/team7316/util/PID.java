@@ -2,7 +2,10 @@ package org.firstinspires.ftc.team7316.util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.team7316.util.copypastaLib.MotionPath;
+
+import java.util.ArrayList;
 
 
 /**
@@ -14,10 +17,11 @@ public class PID {
     private double p, i, d, f;
     private double coastSpeed; // ticks per second usually
     private double previous, sum;
+    public ArrayList<String[]> dataPoints = new ArrayList<>();
 
     private double out;
 
-    private ElapsedTime timer;
+    private ElapsedTime timer = new ElapsedTime();
 
     private boolean usePath;
     private MotionPath path;
@@ -58,6 +62,7 @@ public class PID {
      */
     public void setPath(MotionPath path) {
         usePath = true;
+        dataPoints.clear();
         this.path = path;
     }
 
@@ -127,13 +132,26 @@ public class PID {
     /**
      * Calculates the actual output to the motors
      */
-    public double getPower(double error, double dtime) {
+    public double getPower(double error, double dtime, double sensor, double sensorChange) {
         this.sum += error;
 
         double delta = (error - this.previous) / dtime;
         this.previous = error;
 
-        out = p * error + i * sum + d * delta + f * getPredictedSpeed(timer.seconds());
+        double predSpeed = getPredictedSpeed(timer.seconds());
+        out = p * error + i * sum + d * delta + f * predSpeed;
+
+        double speed = (sensorChange) / dtime;
+        dataPoints.add(new String[]{String.valueOf(timer.seconds()),
+                String.valueOf(error),
+                String.valueOf(predSpeed),
+                String.valueOf(speed),
+                String.valueOf(this.path.getPosition(timer.seconds())),
+                String.valueOf(sensor),
+                String.valueOf(out)});
+
+        Hardware.log("speed", predSpeed);
+        Hardware.log("power", out);
 
         return out;
     }
@@ -164,6 +182,13 @@ public class PID {
         direction = Direction.STOPPED;
         targetTicksCurrent = 0;
         targetTicksFinal = 0;
+    }
+
+    public boolean finished() {
+        if (usePath) {
+            return timer.seconds() > path.getTotalTime();
+        }
+        return false;
     }
 
     /**
