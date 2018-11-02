@@ -20,13 +20,25 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
     @Override
     public void onInit() {
-        Scheduler.instance.add(new TurnGyro(90));
-        Hardware.instance.gyroWrapper.resetHeading();
-        timer.seconds();
+//        Scheduler.instance.add(new TurnGyro(90));
+        Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
+        timer.reset();
     }
 
     @Override
     public void onLoop() {
 
+        GyroAngles angles = Hardware.instance.gyroWrapper.angles();
+        Hardware.instance.gyroWrapper.resetHeading(angles.yaw);
+
+        dps += Math.abs(angles.heading) / timer.seconds();
+        timer.reset();
+        count++;
+
+        Hardware.log("dps", dps / count);
+
+        Hardware.instance.rightmotor.setPower(-0.35);
+        Hardware.instance.leftmotor.setPower(0.35);
+        Hardware.instance.centermotor.setPower(-0.35);
     }
 }

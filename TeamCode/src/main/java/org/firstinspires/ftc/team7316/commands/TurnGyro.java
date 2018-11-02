@@ -40,7 +40,7 @@ public class TurnGyro extends Command {
         this.deltaHeading = modA;
 
         if (this.deltaHeading >= 0) {
-            anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, 14-0, 250);
+            anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, 120, 250);
         } else {
             anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, -Constants.MAX_DEGREES_SPEED, -Constants.MAX_DEGREES_ACCEL);
         }
@@ -53,7 +53,7 @@ public class TurnGyro extends Command {
         turnPID.reset();
         turnPID.setPath(anglePath);
         lastSeconds = timer.seconds();
-        Hardware.instance.gyroWrapper.resetHeading();
+        Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         Hardware.log("delta heading", this.deltaHeading);
     }
 
@@ -71,6 +71,7 @@ public class TurnGyro extends Command {
 
         Hardware.instance.leftmotorWrapper.setPower(power);
         Hardware.instance.rightmotorWrapper.setPower(-power);
+        Hardware.instance.centermotorWrapper.setPower(-power);
 
     }
 

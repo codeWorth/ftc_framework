@@ -52,7 +52,6 @@ public class Hardware {
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);
-        intakemotor = map.dcMotor.get(intakeMotorName);
 
         leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

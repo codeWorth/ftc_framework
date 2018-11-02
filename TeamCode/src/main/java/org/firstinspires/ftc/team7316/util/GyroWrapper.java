@@ -46,13 +46,6 @@ public class GyroWrapper {
     /**
      * Sets the robot's current heading to zero
      */
-    public void resetHeading() {
-        currentYaw = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).thirdAngle;
-    }
-
-    /**
-     * Sets the robot's current heading to zero
-     */
     public void resetHeading(double angle) {
         currentYaw = angle;
     }

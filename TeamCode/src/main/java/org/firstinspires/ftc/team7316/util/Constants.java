@@ -29,7 +29,7 @@ public class Constants {
     public static final double DRIVE_F = 1 / DRIVE_K;
 
     private static final double ROBOT_RADIUS = 7; // inches
-    public static final double TURN_P = 0.05;
+    public static final double TURN_P = 0;
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
     private static final double DEGREES_PER_POWER = 200;

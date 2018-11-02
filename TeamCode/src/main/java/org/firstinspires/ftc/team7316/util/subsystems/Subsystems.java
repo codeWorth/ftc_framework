@@ -14,14 +14,12 @@ public class Subsystems {
     public DriveSubsystem driveSubsystem;
     public ClimberSubsystem climberSubsystem;
     public PlateSubsystem plateSubsystem;
-    public IntakeSubsystem intakeSubsystem;
 
     private Subsystems () {
-        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem,intakeSubsystem};
         plateSubsystem=new PlateSubsystem();
         climberSubsystem=new ClimberSubsystem();
         driveSubsystem = new DriveSubsystem();
-        intakeSubsystem = new IntakeSubsystem();
+        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem};
     }
 
     public static void createSubsystems() {
