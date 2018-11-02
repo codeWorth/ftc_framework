@@ -29,10 +29,10 @@ public class Constants {
     public static final double DRIVE_F = 1 / DRIVE_K;
 
     private static final double ROBOT_RADIUS = 7; // inches
-    public static final double TURN_P = 0;
+    public static final double TURN_P = 0; // originally 0.008
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
-    private static final double DEGREES_PER_POWER = 200;
+    public static final double DEGREES_PER_POWER = 210; // originally 200
     public static final double TURN_F = 1/DEGREES_PER_POWER;
 
     public static final double MAX_TICKS_SPEED = 1500; // ticks per second

@@ -11,8 +11,8 @@ import org.firstinspires.ftc.team7316.util.GyroWrapper;
 import org.firstinspires.ftc.team7316.util.Hardware;
 import org.firstinspires.ftc.team7316.util.Scheduler;
 import org.firstinspires.ftc.team7316.util.modes.AutoBaseOpMode;
-@Autonomous(name="Auto")
-public class DriveAutoTest extends AutoBaseOpMode {
+@Autonomous(name="Auto turn test")
+public class DriveTurnTest extends AutoBaseOpMode {
 
     double dps = 0;
     int count = 0;
@@ -20,7 +20,7 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
     @Override
     public void onInit() {
-//        Scheduler.instance.add(new TurnGyro(90));
+        Scheduler.instance.add(new TurnGyro(90));
         Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         timer.reset();
     }
@@ -29,16 +29,12 @@ public class DriveAutoTest extends AutoBaseOpMode {
     public void onLoop() {
 
         GyroAngles angles = Hardware.instance.gyroWrapper.angles();
-        Hardware.instance.gyroWrapper.resetHeading(angles.yaw);
+//        Hardware.instance.gyroWrapper.resetHeading(angles.yaw);
 
         dps += Math.abs(angles.heading) / timer.seconds();
         timer.reset();
         count++;
 
         Hardware.log("dps", dps / count);
-
-        Hardware.instance.rightmotor.setPower(-0.35);
-        Hardware.instance.leftmotor.setPower(0.35);
-        Hardware.instance.centermotor.setPower(-0.35);
     }
 }

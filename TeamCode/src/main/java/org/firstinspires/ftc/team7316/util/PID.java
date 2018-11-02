@@ -2,7 +2,6 @@ package org.firstinspires.ftc.team7316.util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.team7316.util.copypastaLib.MotionPath;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 public class PID {
 
     private double p, i, d, f;
-    private double coastSpeed; // ticks per second usually
     private double previous, sum;
     public ArrayList<String[]> dataPoints = new ArrayList<>();
 
@@ -28,14 +26,15 @@ public class PID {
 
     // non-motionpath garbage
     private Direction direction;
+    private double maxSpeed; // ticks per second usually
     private double previousTime;
     private int targetTicksCurrent = 0;
     private int targetTicksFinal = 0;
     private int startTicks = 0;
 
-    public PID(double p, double i, double d, double f, double coastSpeed) {
+    public PID(double p, double i, double d, double f, double maxSpeed) {
         setPID(p, i, d, f);
-        this.coastSpeed = coastSpeed;
+        this.maxSpeed = maxSpeed;
 
         out = 0;
 
@@ -93,7 +92,7 @@ public class PID {
      */
     public void updateTargetTicksCurrent() {
         double elapsedTime = timer.seconds() - previousTime;
-        double distance = coastSpeed * elapsedTime;
+        double distance = maxSpeed * elapsedTime;
         switch (direction) {
             case FORWARD:
                 if(targetTicksCurrent + distance > targetTicksFinal) {
@@ -150,6 +149,7 @@ public class PID {
                 String.valueOf(sensor),
                 String.valueOf(out)});
 
+        Hardware.log("error", error);
         Hardware.log("speed", predSpeed);
         Hardware.log("power", out);
 
@@ -164,10 +164,10 @@ public class PID {
         if(usePath) {
             return this.path.getSpeed(time);
         }
-        if(time * coastSpeed + startTicks > targetTicksFinal) {
+        if(time * maxSpeed + startTicks > targetTicksFinal) {
             return 0;
         }
-        return coastSpeed;
+        return maxSpeed;
     }
 
     public void reset() {

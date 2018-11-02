@@ -30,6 +30,9 @@ public class TurnGyro extends Command {
     private GyroAngles angles;
     private static final double DEGREES_THRESH = 3;
 
+    private int timesCompleted = 0;
+    private final int TARGET_REACHED_THRESHOLD = 10;
+
     public TurnGyro(int deltaHeading) {
         // prevents the robot from turning in a stupid way
         int modA = (deltaHeading - 180) % 360;
@@ -73,11 +76,16 @@ public class TurnGyro extends Command {
         Hardware.instance.rightmotorWrapper.setPower(-power);
         Hardware.instance.centermotorWrapper.setPower(-power);
 
+        if((Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH)) {
+            timesCompleted++;
+        }
+
     }
 
     @Override
     public boolean shouldRemove() {
-        return turnPID.finished() || (Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH);
+//        return turnPID.finished() || (Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH);
+        return timesCompleted >= TARGET_REACHED_THRESHOLD;
     }
 
     @Override
@@ -86,7 +94,8 @@ public class TurnGyro extends Command {
         writeData("left", turnPID.dataPoints);
 
         Hardware.instance.leftmotorWrapper.setPower(0);
-        Hardware.instance.leftmotorWrapper.setPower(0);
+        Hardware.instance.rightmotorWrapper.setPower(0);
+        Hardware.instance.centermotorWrapper.setPower(0);
     }
 
     private void writeData(String motorName, ArrayList<String[]> dataList) {
