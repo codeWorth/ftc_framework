@@ -10,4 +10,11 @@ public class GyroAngles {
         this.roll = roll;
     }
 
+    public void add(GyroAngles other) {
+        this.heading += other.heading;
+        this.yaw += other.yaw;
+        this.pitch += other.pitch;
+        this.roll += other.roll;
+    }
+
 }

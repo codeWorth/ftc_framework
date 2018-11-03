@@ -52,17 +52,20 @@ public class Hardware {
         rightmotor= map.dcMotor.get(rightMotorName);
         centermotor=map.dcMotor.get(centerMotorName);
         climbmotor=map.dcMotor.get(climbMotorName);
+        intakemotor=map.dcMotor.get(intakeMotorName);
 
         leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         centermotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climbmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         centermotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         climbmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakemotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         plateServo=map.servo.get(plateServoName);
         BNO055IMU.Parameters gyroParams = new BNO055IMU.Parameters();

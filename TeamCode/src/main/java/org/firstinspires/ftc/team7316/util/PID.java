@@ -16,6 +16,7 @@ public class PID {
     private double p, i, d, f;
     private double previous, sum;
     public ArrayList<String[]> dataPoints = new ArrayList<>();
+    private boolean turnPIDAlgo = true;
 
     private double out;
 
@@ -33,6 +34,10 @@ public class PID {
     private int startTicks = 0;
 
     public PID(double p, double i, double d, double f, double maxSpeed) {
+        this(p, i, d, f, maxSpeed, false);
+    }
+
+    public PID(double p, double i, double d, double f, double maxSpeed, boolean turnPID) {
         setPID(p, i, d, f);
         this.maxSpeed = maxSpeed;
 
@@ -44,6 +49,8 @@ public class PID {
         usePath = false;
 
         reset();
+
+        turnPIDAlgo = turnPID;
     }
 
     /**
@@ -138,7 +145,14 @@ public class PID {
         this.previous = error;
 
         double predSpeed = getPredictedSpeed(timer.seconds());
-        out = p * error + i * sum + d * delta + f * predSpeed;
+
+        Hardware.log("delta", delta);
+
+        if (turnPIDAlgo) {
+            out = p * error + i * sum + d * delta + (predSpeed + 101) / 499;
+        } else {
+            out = p * error + i * sum + d * delta + f * predSpeed;
+        }
 
         double speed = (sensorChange) / dtime;
         dataPoints.add(new String[]{String.valueOf(timer.seconds()),

@@ -20,12 +20,11 @@ public class TurnGyro extends Command {
 
     private int deltaHeading;
     private CombinedPath.LongitudalTrapezoid anglePath;
-
     ElapsedTime timer = new ElapsedTime();
     double lastSeconds;
     double lastHeading = 0;
 
-    private PID turnPID = new PID(Constants.TURN_P, Constants.TURN_I, Constants.TURN_D, Constants.TURN_F, 0);
+    private PID turnPID = new PID(Constants.TURN_P, Constants.TURN_I, Constants.TURN_D, Constants.TURN_F, 0, true);
 
     private GyroAngles angles;
     private static final double DEGREES_THRESH = 3;
@@ -43,7 +42,7 @@ public class TurnGyro extends Command {
         this.deltaHeading = modA;
 
         if (this.deltaHeading >= 0) {
-            anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, 120, 250);
+            anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, Constants.MAX_DEGREES_SPEED, Constants.MAX_DEGREES_ACCEL);
         } else {
             anglePath = new CombinedPath.LongitudalTrapezoid(0, this.deltaHeading, -Constants.MAX_DEGREES_SPEED, -Constants.MAX_DEGREES_ACCEL);
         }
@@ -56,7 +55,12 @@ public class TurnGyro extends Command {
         turnPID.reset();
         turnPID.setPath(anglePath);
         lastSeconds = timer.seconds();
-        Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
+
+        GyroAngles inititalAngles = Hardware.instance.gyroWrapper.angles();
+        Hardware.instance.gyroWrapper.resetHeading(inititalAngles.yaw);
+        inititalAngles.heading = 0;
+        this.angles = inititalAngles;
+
         Hardware.log("delta heading", this.deltaHeading);
     }
 
@@ -65,7 +69,9 @@ public class TurnGyro extends Command {
         double dtime = timer.seconds() - lastSeconds;
         lastSeconds = timer.seconds();
 
-        angles = Hardware.instance.gyroWrapper.angles();
+        GyroAngles deltaAngles = Hardware.instance.gyroWrapper.angles();
+        this.angles.add(deltaAngles);
+        Hardware.instance.gyroWrapper.resetHeading(deltaAngles.yaw);
         Hardware.log("f", anglePath.getSpeed(timer.seconds()));
         Hardware.log("time", timer.seconds());
 
@@ -85,7 +91,8 @@ public class TurnGyro extends Command {
     @Override
     public boolean shouldRemove() {
 //        return turnPID.finished() || (Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH);
-        return timesCompleted >= TARGET_REACHED_THRESHOLD;
+//        return timesCompleted >= TARGET_REACHED_THRESHOLD;
+        return timer.seconds() > anglePath.getTotalTime() + 1;// || (Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH);
     }
 
     @Override
