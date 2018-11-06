@@ -20,9 +20,9 @@ public class JoystickWrapper {
     public double getX() {
         switch (input) {
             case LEFT:
-                return gpSource.axisValue(GamepadAxis.L_STICK_X);
+                return deadzone(gpSource.axisValue(GamepadAxis.L_STICK_X));
             case RIGHT:
-                return gpSource.axisValue(GamepadAxis.R_STICK_X);
+                return deadzone(gpSource.axisValue(GamepadAxis.R_STICK_X));
         }
         return 0; // Shouldn't happen
     }
@@ -30,9 +30,9 @@ public class JoystickWrapper {
     public double getY() {
         switch (input) {
             case LEFT:
-                return gpSource.axisValue(GamepadAxis.L_STICK_Y);
+                return deadzone(gpSource.axisValue(GamepadAxis.L_STICK_Y));
             case RIGHT:
-                return gpSource.axisValue(GamepadAxis.R_STICK_Y);
+                return deadzone(gpSource.axisValue(GamepadAxis.R_STICK_Y));
         }
         return 0; // Shouldn't happen at all
     }
@@ -43,6 +43,18 @@ public class JoystickWrapper {
      */
     public double getAngle() {
         return Math.atan2(getY(), getX());
+    }
+
+    private static double deadzone(double value) {
+        double deadzoneVal = 0.01;
+
+        if (Math.abs(value) < deadzoneVal) {
+            return 0;
+        } else if (value > 0) {
+            return deadzoneVal + (1 - deadzoneVal) * value;
+        } else {
+            return -deadzoneVal + (1 - deadzoneVal) * value;
+        }
     }
 
 }

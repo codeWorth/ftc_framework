@@ -26,12 +26,12 @@ public class SimpleFrameGrabber implements CameraBridgeViewBase.CvCameraViewList
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-//        ImageProcess.start();
+        ImageProcess.start();
     }
 
     @Override
     public void onCameraViewStopped() {
-//        ImageProcess.stop();
+        ImageProcess.stop();
     }
 
     @Override

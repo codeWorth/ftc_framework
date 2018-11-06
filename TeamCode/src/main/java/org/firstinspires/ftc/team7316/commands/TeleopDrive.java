@@ -17,11 +17,11 @@ public class TeleopDrive extends Command {
     public void loop() {
 
         double forward = OI.instance.gp1.left_stick.getY();
-        double strafe = OI.instance.gp1.left_stick.getX();
+        double strafe = OI.instance.gp1.left_stick.getX() / 2;
         double rotate = OI.instance.gp1.right_stick.getX();
 
-        Hardware.instance.leftmotorWrapper.setPower(forward + rotate);
-        Hardware.instance.rightmotorWrapper.setPower(forward - rotate);
+        Hardware.instance.leftmotorWrapper.setPower(forward + rotate + strafe * 0.1);
+        Hardware.instance.rightmotorWrapper.setPower(forward - rotate - strafe * 0.1);
         Hardware.instance.centermotorWrapper.setPower(strafe);
 
     }

@@ -56,7 +56,7 @@ public class Hardware {
 
         leftmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        centermotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        centermotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         climbmotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftmotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakemotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -80,7 +80,6 @@ public class TurnGyro extends Command {
 
         Hardware.instance.leftmotorWrapper.setPower(power);
         Hardware.instance.rightmotorWrapper.setPower(-power);
-        Hardware.instance.centermotorWrapper.setPower(-power);
 
         if((Math.abs(deltaHeading - angles.heading) < DEGREES_THRESH)) {
             timesCompleted++;

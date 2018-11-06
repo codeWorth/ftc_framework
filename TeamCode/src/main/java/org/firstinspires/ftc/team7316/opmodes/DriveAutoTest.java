@@ -49,7 +49,6 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
         Hardware.instance.rightmotor.setPower(-power);
         Hardware.instance.leftmotor.setPower(power);
-        Hardware.instance.centermotor.setPower(-power);
 
         if (timer2.seconds() > power * 50) {
             Log.d("used power", String.valueOf(power));
