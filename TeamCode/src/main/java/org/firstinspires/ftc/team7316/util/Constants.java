@@ -18,6 +18,8 @@ public class Constants {
     public static final double WHEEL_RADIUS = 2; // inches
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * Math.PI;
     public static final double SLOW_SPEED = 0.6;
+    public static final double CLIMB_MOTOR_MAX=0;
+    public static final double CLIMB_MOTOR_MIN=0;
 
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
     public static final double ACCELERATION_SPEED = 0.2;

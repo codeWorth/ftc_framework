@@ -8,8 +8,10 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 
 import java.util.Arrays;
 
@@ -42,7 +44,9 @@ public class SimpleFrameGrabber implements CameraBridgeViewBase.CvCameraViewList
 
         MatOfPoint contour = ImageProcess.grabFrame();
         if (contour != null) {
-            Imgproc.drawContours(frame, Arrays.asList(contour), 0, new Scalar(0, 0, 255), 2); // draw the contour on the orignial image
+            Moments m = Imgproc.moments(contour);
+            Imgproc.drawContours(frame, Arrays.asList(contour), 0, new Scalar(0, 0, 255), 2);
+            Point p = new Point( m.m10 / m.m00, m.m01 / m.m00 ); // draw the contour on the orignial image
             //paramters: image to draw on, the list of contours, the index of the contour we want to draw, the color to draw it in, the thickness of the line
             // I make the contour into a list because the drawContours function only accepts lists (very annoying)
             // The color is red (opencv lists colors as BGR)
