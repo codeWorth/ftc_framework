@@ -22,6 +22,7 @@ public class DriveAutoTest extends AutoBaseOpMode {
     ElapsedTime timer2 = new ElapsedTime();
 
     double power = 0.1;
+    long ticks = 0;
 
     @Override
     public void onInit() {
@@ -29,17 +30,16 @@ public class DriveAutoTest extends AutoBaseOpMode {
         Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         timer.reset();
         timer2.reset();
+        ticks = Hardware.instance.leftmotor.getCurrentPosition();
     }
 
     @Override
     public void onLoop() {
 
-        GyroAngles angles = Hardware.instance.gyroWrapper.angles();
-        Hardware.instance.gyroWrapper.resetHeading(angles.yaw);
-
-        dps += Math.abs(angles.heading) / timer.seconds();
+        dps += Math.abs(Hardware.instance.leftmotor.getCurrentPosition() - ticks) / timer.seconds();
         timer.reset();
         count++;
+        ticks = Hardware.instance.leftmotor.getCurrentPosition();
 
         double dp = 0.1;
         //double power = 80 * Constants.TURN_F;
@@ -58,6 +58,31 @@ public class DriveAutoTest extends AutoBaseOpMode {
             count = 0;
             power += dp;
         }
+
+//        GyroAngles angles = Hardware.instance.gyroWrapper.angles();
+//        Hardware.instance.gyroWrapper.resetHeading(angles.yaw);
+//
+//        dps += Math.abs(angles.heading) / timer.seconds();
+//        timer.reset();
+//        count++;
+//
+//        double dp = 0.1;
+//        //double power = 80 * Constants.TURN_F;
+//
+//        Hardware.log(String.valueOf(power), dps / count);
+//        Hardware.log("expected speed " + String.valueOf(power), power / Constants.TURN_F);
+//
+//        Hardware.instance.rightmotor.setPower(-power);
+//        Hardware.instance.leftmotor.setPower(power);
+//
+//        if (timer2.seconds() > power * 50) {
+//            Log.d("used power", String.valueOf(power));
+//            Log.d("expected speed", String.valueOf(power / Constants.TURN_F));
+//            Log.d("real speed", String.valueOf(dps / count));
+//            dps = 0;
+//            count = 0;
+//            power += dp;
+//        }
 
 
     }

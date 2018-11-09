@@ -39,6 +39,7 @@ public class Constants {
     public static final double MAX_TICKS_ACCEL = 1500; // ticks per second per second
     public static final double MAX_DEGREES_SPEED = 120; // degrees per second
     public static final double MAX_DEGREES_ACCEL = 150; // degrees per second per second
+    public static final double MIN_DRIVE_POWER = 0.15;
 
     public static int degreesToTicks(int degrees) {
         double d = (double) degrees;

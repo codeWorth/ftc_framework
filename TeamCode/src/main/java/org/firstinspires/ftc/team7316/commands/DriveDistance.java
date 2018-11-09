@@ -2,30 +2,20 @@ package org.firstinspires.ftc.team7316.commands;
 
 import android.util.Log;
 
-import com.opencsv.CSVWriter;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.team7316.util.Constants;
 import org.firstinspires.ftc.team7316.util.Hardware;
 import org.firstinspires.ftc.team7316.util.commands.Command;
 import org.firstinspires.ftc.team7316.util.copypastaLib.CombinedPath;
 import org.firstinspires.ftc.team7316.util.subsystems.Subsystems;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class DriveDistance extends Command {
     int ticks;
     long lastTime;
+    double pathTime = 0;
     ElapsedTime t = new ElapsedTime();
     public DriveDistance(int ticks){
         this.ticks=ticks;
@@ -34,12 +24,16 @@ public class DriveDistance extends Command {
     public void init() {
         t.reset();
         Subsystems.instance.driveSubsystem.resetMotors();
+        CombinedPath.LongitudalTrapezoid pth;
         if(ticks>0){
-            Subsystems.instance.driveSubsystem.setMotorPaths(new CombinedPath.LongitudalTrapezoid(0,ticks,1200,1500));
+            pth = new CombinedPath.LongitudalTrapezoid(0,ticks,Constants.MAX_TICKS_SPEED,Constants.MAX_TICKS_ACCEL);
         }
         else {
-            Subsystems.instance.driveSubsystem.setMotorPaths((new CombinedPath.LongitudalTrapezoid(0,ticks,-1200,-1500)));
+            pth = new CombinedPath.LongitudalTrapezoid(0,ticks,-Constants.MAX_TICKS_SPEED,-Constants.MAX_TICKS_ACCEL);
         }
+
+        pathTime = pth.getTotalTime();
+        Subsystems.instance.driveSubsystem.setMotorPaths(pth);
         lastTime = System.currentTimeMillis();
     }
 
@@ -53,7 +47,7 @@ public class DriveDistance extends Command {
 
     @Override
     public boolean shouldRemove() {
-        return Subsystems.instance.driveSubsystem.checkMotorsFinished() || t.seconds() > 5;
+        return Subsystems.instance.driveSubsystem.checkMotorsFinished() || t.seconds() > pathTime + 1;
     }
 
     @Override
