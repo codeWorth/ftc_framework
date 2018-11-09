@@ -7,7 +7,7 @@ import org.firstinspires.ftc.team7316.commands.DriveToCorridor;
 import org.firstinspires.ftc.team7316.commands.MovePlateServo;
 import org.firstinspires.ftc.team7316.commands.ResetAngle;
 import org.firstinspires.ftc.team7316.commands.StrafeForTime;
-import org.firstinspires.ftc.team7316.commands.TurnGyro;
+import org.firstinspires.ftc.team7316.commands.TurnGyroSimple;
 import org.firstinspires.ftc.team7316.commands.TurnTowardsCheddar;
 import org.firstinspires.ftc.team7316.commands.TurnTowardsCorridor;
 import org.firstinspires.ftc.team7316.commands.UnturnCheddar;
@@ -32,6 +32,7 @@ public class AutoCodes {
     public static SequentialCommand blueDoubleCheddarSequence() {
         ClimbForPosition lowerClimber = new ClimbForPosition(Constants.CLIMB_MOTOR_EXTENDED);
         StrafeForTime strafeOffHook = new StrafeForTime(0.5, true);
+        DriveDistance driveAwayFromLander = new DriveDistance(Constants.inchesToTicks(5));
         ClimbForPosition compactClimber = new ClimbForPosition(Constants.CLIMB_MOTOR_COMPACTED);
 
         ResetAngle reset1 = new ResetAngle();
@@ -45,12 +46,12 @@ public class AutoCodes {
         TurnTowardsCorridor turnTowardsCorridor = new TurnTowardsCorridor();
         DriveToCorridor driveToCorridor = new DriveToCorridor();
 
-        TurnGyro turnAlongCorridor = new TurnGyro(45);
+        TurnGyroSimple turnAlongCorridor = new TurnGyroSimple(45);
         DriveDistance driveToBox = new DriveDistance((int) Constants.BOX_DISTANCE);
         MovePlateServo dropMarker = new MovePlateServo(true);
         Wait waitReturnPlateServo = new Wait(0.5);
         MovePlateServo pullBackServo = new MovePlateServo(false);
-        TurnGyro turnTowardsCheddar = new TurnGyro(135);
+        TurnGyroSimple turnTowardsCheddar = new TurnGyroSimple(135);
 
         ResetAngle reset2 = new ResetAngle();
         CameraUntilCheddar findCheddar3 = new CameraUntilCheddar();
@@ -69,6 +70,7 @@ public class AutoCodes {
         return new SequentialCommand(
                 lowerClimber,
                 strafeOffHook,
+                driveAwayFromLander,
                 compactClimber,
                 reset1,
                 findCheddar1,
