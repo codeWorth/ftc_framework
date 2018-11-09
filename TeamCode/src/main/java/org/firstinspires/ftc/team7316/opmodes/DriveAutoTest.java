@@ -84,7 +84,7 @@ public class DriveAutoTest extends AutoBaseOpMode {
         ticksRight = Hardware.instance.rightmotor.getCurrentPosition();
         timer.reset();
         count++;
-        
+
         Hardware.instance.rightmotor.setPower(0.9 * power);
         Hardware.instance.leftmotor.setPower(power);
 
