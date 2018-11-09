@@ -13,7 +13,10 @@ public class PlateSubsystem extends Subsystem {
         return null;
     }
     public void servoLower(){
-        Hardware.instance.plateServo.setPosition(1);
+        Hardware.instance.plateServo.setPosition(0.6);
+    }
+    public void servoRaise(){
+        Hardware.instance.plateServo.setPosition(0.2);
     }
 
     @Override

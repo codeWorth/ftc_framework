@@ -144,8 +144,12 @@ public class CombinedPath implements MotionPath {
 
     public static class LongitudalTrapezoid extends CombinedPath {
         public LongitudalTrapezoid(double start, double distance, double maxV, double a) {
+            this(start, distance, 0, maxV, a);
+        }
+
+        public LongitudalTrapezoid(double start, double distance, double startV, double maxV, double a) {
             super(start);
-            MotionPath[] p = new MotionPath[]{new LinearDerivativePath(0.0D, maxV, a), null, new LinearDerivativePath(maxV, 0.0D, -a)};
+            MotionPath[] p = new MotionPath[]{new LinearDerivativePath(startV, maxV, a), null, new LinearDerivativePath(maxV, 0.0D, -a)};
             p[1] = new LinearDerivativePath(distance - 2.0D * p[0].getTotalDistance(), maxV);
             if(Math.abs(p[0].getTotalDistance()) > Math.abs(distance / 2.0D)) {
                 double newTime = Math.sqrt(distance / a);

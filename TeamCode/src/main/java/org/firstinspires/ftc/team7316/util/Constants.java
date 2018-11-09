@@ -18,27 +18,39 @@ public class Constants {
     public static final double WHEEL_RADIUS = 2; // inches
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * Math.PI;
     public static final double SLOW_SPEED = 0.6;
+    public static final long CLIMB_MOTOR_EXTENDED=-4000;
+    public static final long CLIMB_MOTOR_COMPACTED=-1000;
 
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
     public static final double ACCELERATION_SPEED = 0.2;
 
-    public static final double DRIVE_P = 0.0085;
+    public static final double DRIVE_P = 0.005;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
-    public static final double DRIVE_K = 1900; // ticks per 1 power
-    public static final double DRIVE_F = 1 / DRIVE_K;
+    public static final double DRIVE_M_LEFT = 2265;
+    public static final double DRIVE_B_LEFT = 515;
+    public static final double DRIVE_M_RIGHT = 2776;
+    public static final double DRIVE_B_RIGHT = 568;
 
     private static final double ROBOT_RADIUS = 7; // inches
-    public static final double TURN_P = 0;
+    public static final double TURN_P = 0.018;
     public static final double TURN_I = 0;
     public static final double TURN_D = 0; //0.005;
-    public static final double DEGREES_PER_POWER = 210;
-    public static final double TURN_F = 1/DEGREES_PER_POWER;
+    public static final double TURN_M = 551;
+    public static final double TURN_B = 117;
+
+    public static final double PIXELS_TO_DEGREES = 0.01;
+    public static final double CHEDDAR_DISTANCE1 = 35;
+    public static final double CHEDDAR_DISTANCE2 = 40;
+    public static final double RETURN_SPACING = 20;
+    public static final double CORRIDOR_DISTANCE = 50;
+    public static final double BOX_DISTANCE = 40;
+    public static final double CRATER_DISTANCE = 115;
 
     public static final double MAX_TICKS_SPEED = 1500; // ticks per second
-    public static final double MAX_TICKS_ACCEL = 1500; // ticks per second per second
+    public static final double MAX_TICKS_ACCEL = 1000; // ticks per second per second
     public static final double MAX_DEGREES_SPEED = 120; // degrees per second
-    public static final double MAX_DEGREES_ACCEL = 150; // degrees per second per second
+    public static final double MAX_DEGREES_ACCEL = 75; // degrees per second per second
     public static final double MIN_DRIVE_POWER = 0.15;
 
     public static int degreesToTicks(int degrees) {

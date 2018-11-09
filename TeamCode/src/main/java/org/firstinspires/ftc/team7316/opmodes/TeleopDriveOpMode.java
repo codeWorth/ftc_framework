@@ -25,26 +25,28 @@ public class TeleopDriveOpMode extends TeleopBaseOpMode {
     @Override
     public void onLoop() {
 
-        Hardware.log("dtime", String.valueOf(System.currentTimeMillis() - lastTime));
+//        Hardware.log("dtime", String.valueOf(System.currentTimeMillis() - lastTime));
+//
+//        if (OI.instance.gp1.a_button.state()) {
+//
+//            long dTimeMilis = System.currentTimeMillis() - lastTime;
+//            double dTicks = (double) (Hardware.instance.leftmotor.getCurrentPosition() - lastTicks);
+//            lastTime = System.currentTimeMillis();
+//            lastTicks = Hardware.instance.leftmotor.getCurrentPosition();
+//
+//            double dTime = ((double) dTimeMilis) / 1000.0;
+//
+//            avSpeed += dTicks / dTime;
+//            count++;
+//        } else {
+//            lastTime = System.currentTimeMillis();
+//        }
+//
+//        Hardware.log("sped", avSpeed / count);
+//        Hardware.log("ticks left", Hardware.instance.leftmotor.getCurrentPosition());
+//        Hardware.log("ticks calc", Constants.degreesToTicks(360));
 
-        if (OI.instance.gp1.a_button.state()) {
-
-            long dTimeMilis = System.currentTimeMillis() - lastTime;
-            double dTicks = (double) (Hardware.instance.leftmotor.getCurrentPosition() - lastTicks);
-            lastTime = System.currentTimeMillis();
-            lastTicks = Hardware.instance.leftmotor.getCurrentPosition();
-
-            double dTime = ((double) dTimeMilis) / 1000.0;
-
-            avSpeed += dTicks / dTime;
-            count++;
-        } else {
-            lastTime = System.currentTimeMillis();
-        }
-
-        Hardware.log("sped", avSpeed / count);
-        Hardware.log("ticks left", Hardware.instance.leftmotor.getCurrentPosition());
-        Hardware.log("ticks calc", Constants.degreesToTicks(360));
+        Hardware.log("enc", Hardware.instance.climbmotor.getCurrentPosition());
 
 
     }
