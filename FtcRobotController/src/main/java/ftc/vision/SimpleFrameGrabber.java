@@ -17,6 +17,8 @@ import java.util.Arrays;
 
 public class SimpleFrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2{
 
+    public static MatOfPoint contour;
+
     public SimpleFrameGrabber(CameraBridgeViewBase cameraBridgeViewBase, int frameWidthRequest, int frameHeightRequest) {
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
 
@@ -28,12 +30,12 @@ public class SimpleFrameGrabber implements CameraBridgeViewBase.CvCameraViewList
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-        ImageProcess.start();
+//        ImageProcess.start();
     }
 
     @Override
     public void onCameraViewStopped() {
-        ImageProcess.stop();
+//        ImageProcess.stop();
     }
 
     @Override
@@ -42,11 +44,9 @@ public class SimpleFrameGrabber implements CameraBridgeViewBase.CvCameraViewList
 
         ImageProcess.setSourceImage(frame);
 
-        MatOfPoint contour = ImageProcess.grabFrame();
+        contour = ImageProcess.grabFrame();
         if (contour != null) {
-            Moments m = Imgproc.moments(contour);
             Imgproc.drawContours(frame, Arrays.asList(contour), 0, new Scalar(0, 0, 255), 2);
-            Point p = new Point( m.m10 / m.m00, m.m01 / m.m00 ); // draw the contour on the orignial image
             //paramters: image to draw on, the list of contours, the index of the contour we want to draw, the color to draw it in, the thickness of the line
             // I make the contour into a list because the drawContours function only accepts lists (very annoying)
             // The color is red (opencv lists colors as BGR)

@@ -13,10 +13,9 @@ import java.util.ArrayList;
 
 public class PID {
 
-    private double p, i, d, f;
+    private double p, i, d, f_m, f_b;
     private double previous, sum;
     public ArrayList<String[]> dataPoints = new ArrayList<>();
-    private boolean turnPIDAlgo = true;
 
     private double out;
 
@@ -33,12 +32,13 @@ public class PID {
     private int targetTicksFinal = 0;
     private int startTicks = 0;
 
-    public PID(double p, double i, double d, double f, double maxSpeed) {
-        this(p, i, d, f, maxSpeed, false);
-    }
+    public PID(double p, double i, double d, double f_m, double f_b, double maxSpeed) {
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.f_m = f_m;
+        this.f_b = f_b;
 
-    public PID(double p, double i, double d, double f, double maxSpeed, boolean turnPID) {
-        setPID(p, i, d, f);
         this.maxSpeed = maxSpeed;
 
         out = 0;
@@ -49,18 +49,6 @@ public class PID {
         usePath = false;
 
         reset();
-
-        turnPIDAlgo = turnPID;
-    }
-
-    /**
-     * Sets the PIDF constants
-     */
-    public void setPID(double p, double i, double d, double f) {
-        this.p = p;
-        this.i = i;
-        this.d = d;
-        this.f = f;
     }
 
     /**
@@ -148,11 +136,7 @@ public class PID {
 
         Hardware.log("delta", delta);
 
-        if (turnPIDAlgo) {
-            out = p * error + i * sum + d * delta + (predSpeed + 101) / 499;
-        } else {
-            out = p * error + i * sum + d * delta + f * predSpeed;
-        }
+        out = p * error + i * sum + d * delta + (predSpeed + f_b) /  f_m;
 
         double speed = (sensorChange) / dtime;
         dataPoints.add(new String[]{String.valueOf(timer.seconds()),

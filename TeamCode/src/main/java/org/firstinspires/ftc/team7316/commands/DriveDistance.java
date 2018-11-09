@@ -71,7 +71,7 @@ public class DriveDistance extends Command {
 
     private void writeData(String motorName, ArrayList<String[]> dataList) {
         Log.d(motorName+"_AutoInfo","Info:\n" +
-                "\tPIDF Constants: " + String.format("%s,%s,%s,%s\n", Constants.DRIVE_P, Constants.DRIVE_I, Constants.DRIVE_D, Constants.DRIVE_F) +
+                "\tPIDF Constants: " + String.format("%s,%s,%s\n", Constants.DRIVE_P, Constants.DRIVE_I, Constants.DRIVE_D) +
                 "\tData Order: Time, Error, Predicted Speed, Actual Speed, Predicted Position, Actual Position Power \n");
 
         for (String[] data : dataList) {

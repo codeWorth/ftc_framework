@@ -22,4 +22,8 @@ public class ClimberSubsystem extends Subsystem {
     public void setMotor(double power){
         Hardware.instance.climbmotor.setPower(power);
     }
+
+    public long currentPosition() {
+        return Hardware.instance.climbmotor.getCurrentPosition();
+    }
 }

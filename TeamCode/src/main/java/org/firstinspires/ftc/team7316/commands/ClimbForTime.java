@@ -26,7 +26,7 @@ public class ClimbForTime extends Command {
         else {
             Subsystems.instance.climberSubsystem.setMotor(-1);
         }
-        if(Hardware.instance.climbmotor.getCurrentPosition()> Constants.CLIMB_MOTOR_MAX||Hardware.instance.climbmotor.getCurrentPosition()<Constants.CLIMB_MOTOR_MIN){
+        if(Hardware.instance.climbmotor.getCurrentPosition()> Constants.CLIMB_MOTOR_EXTENDED||Hardware.instance.climbmotor.getCurrentPosition()<Constants.CLIMB_MOTOR_COMPACTED){
             Subsystems.instance.climberSubsystem.setMotor(0);
         }
     }

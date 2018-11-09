@@ -23,6 +23,8 @@ public class ImageProcess implements Runnable {
 	private static final int radius = 8; // the variation in hue accepted
 	private static final int minS = 150; // minimum saturation
 	private static int minArea = 0;
+
+	public static Mat stageHue = new Mat();
 	
 	private static CountDownLatch latch = new CountDownLatch(1); // use this to wait for a new frame
 	private static Mat sourceImg; // image we want to process
@@ -76,6 +78,8 @@ public class ImageProcess implements Runnable {
 
         Core.inRange(hsv, new Scalar(hue-radius, minS, 0), new Scalar(hue+radius, 255, 255), _binary);
 		// the Scalar go in the order H, S, V. The max is always 255
+
+        stageHue = _binary.clone();
 
 		Mat _binaryBlur = new Mat(); // we want to blur the binary to make the really small white parts go away
 		Imgproc.blur(_binary, _binaryBlur, new Size(11,11)); // blur it
