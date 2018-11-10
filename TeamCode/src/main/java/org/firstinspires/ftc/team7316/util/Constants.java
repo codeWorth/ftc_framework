@@ -28,9 +28,9 @@ public class Constants {
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
     public static final double DRIVE_M_LEFT = 2265;
-    public static final double DRIVE_B_LEFT = 515;
+    public static final double DRIVE_B_LEFT = 315;
     public static final double DRIVE_M_RIGHT = 2776;
-    public static final double DRIVE_B_RIGHT = 568;
+    public static final double DRIVE_B_RIGHT = 400;
 
     private static final double ROBOT_RADIUS = 7; // inches
     public static final double TURN_P = 0.018;
@@ -39,12 +39,11 @@ public class Constants {
     public static final double TURN_M = 551;
     public static final double TURN_B = 117;
 
-    public static final double PIXELS_TO_DEGREES = 0.01;
     public static final double CHEDDAR_DISTANCE1 = 35;
     public static final double CHEDDAR_DISTANCE2 = 40;
-    public static final double RETURN_SPACING = 20;
-    public static final double CORRIDOR_DISTANCE = 50;
-    public static final double BOX_DISTANCE = 40;
+    public static final double RETURN_SPACING = 10;
+    public static final double CORRIDOR_DISTANCE = 42;
+    public static final double BOX_DISTANCE = 46;
     public static final double CRATER_DISTANCE = 115;
 
     public static final double MAX_TICKS_SPEED = 1500; // ticks per second
@@ -57,6 +56,10 @@ public class Constants {
         double d = (double) degrees;
         double inches = degrees * Math.PI * ROBOT_RADIUS / 180;
         return inchesToTicks(inches);
+    }
+
+    public static double pixelsToDegrees(double pixels) {
+        return pixels * -0.153549166679 + 45.450553337;
     }
 
     /**

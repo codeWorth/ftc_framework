@@ -9,7 +9,7 @@ public class DriveToCorridor extends Command {
 
     @Override
     public void init() {
-        double dist = Constants.CORRIDOR_DISTANCE + Constants.RETURN_SPACING * Math.sin(-TurnTowardsCheddar.ANGLE_TURNED / 180 * Math.PI);
+        double dist = Constants.CORRIDOR_DISTANCE; // + Constants.RETURN_SPACING * Math.sin(-TurnTowardsCheddar.ANGLE_TURNED / 180 * Math.PI);
         drive = new DriveDistance((int) dist);
         drive.init();
     }

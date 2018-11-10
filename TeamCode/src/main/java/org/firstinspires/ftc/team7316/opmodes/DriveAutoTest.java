@@ -6,13 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team7316.commands.CameraUntilCheddar;
-import org.firstinspires.ftc.team7316.commands.TurnGyroSimple;
+import org.firstinspires.ftc.team7316.commands.DriveDistance;
+import org.firstinspires.ftc.team7316.util.Constants;
 import org.firstinspires.ftc.team7316.util.GyroAngles;
 import org.firstinspires.ftc.team7316.util.Hardware;
 import org.firstinspires.ftc.team7316.util.Scheduler;
+import org.firstinspires.ftc.team7316.util.commands.AutoCodes;
 import org.firstinspires.ftc.team7316.util.modes.AutoBaseOpMode;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
+
+import ftc.vision.ImageProcess;
 
 @Autonomous(name="Auto")
 public class DriveAutoTest extends AutoBaseOpMode {
@@ -25,12 +29,13 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
     long ticksLeft = 0;
     long ticksRight = 0;
-    double power = 1.1;
+    double power = 1.0;
     double dp = 0.1;
 
     @Override
     public void onInit() {
-        Scheduler.instance.add(new TurnGyroSimple(90));
+//        Scheduler.instance.add(new TurnGyroSimple(90));
+        Scheduler.instance.add(AutoCodes.blueDoubleCheddarSequence());
         Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         timer.reset();
         timer2.reset();
@@ -40,13 +45,12 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
         ticksLeft = Hardware.instance.leftmotor.getCurrentPosition();
         ticksRight = Hardware.instance.rightmotor.getCurrentPosition();
+
     }
 
     @Override
     public void onLoop() {
-
-//        testDriveF();
-
+//        testCamera();
     }
 
     private void testTurnF() {
@@ -80,7 +84,7 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
         runningAverage1 += Math.abs(Hardware.instance.leftmotor.getCurrentPosition() - ticksLeft) / timer.seconds();
         ticksLeft = Hardware.instance.leftmotor.getCurrentPosition();
-        runningAverage1 += Math.abs(Hardware.instance.rightmotor.getCurrentPosition() - ticksRight) / timer.seconds();
+        runningAverage2 += Math.abs(Hardware.instance.rightmotor.getCurrentPosition() - ticksRight) / timer.seconds();
         ticksRight = Hardware.instance.rightmotor.getCurrentPosition();
         timer.reset();
         count++;
@@ -91,7 +95,10 @@ public class DriveAutoTest extends AutoBaseOpMode {
         Hardware.log("right power", 0.9 * power);
         Hardware.log("left power", power);
 
-        if (timer2.seconds() > 5) {
+        Hardware.log("left ticks", Hardware.instance.leftmotor.getCurrentPosition());
+        Hardware.log("right ticks", Hardware.instance.rightmotor.getCurrentPosition());
+
+        if (timer2.seconds() > 3) {
             Log.d("used power left", String.valueOf(power));
             Log.d("real speed left", String.valueOf(runningAverage1 / count));
             Log.d("used power right", String.valueOf(0.9 * power));
@@ -109,7 +116,8 @@ public class DriveAutoTest extends AutoBaseOpMode {
 
         if (CameraUntilCheddar.contour != null) {
             Moments M = Imgproc.moments(CameraUntilCheddar.contour);
-            x = Math.floor(M.m01 /  M.m00);
+            x = Math.floor(M.m10 /  M.m00);
+            ImageProcess.stop();
         }
 
         Hardware.log("cheddar x", x);

@@ -14,6 +14,7 @@ public class SequentialCommand extends Command implements TerminatedListener {
     private Command[] cmds;
     private int index = 0;
     private boolean done = false;
+    private String cmdName = "";
 
     public SequentialCommand(Command... commands) {
         this.cmds = commands;
@@ -39,6 +40,7 @@ public class SequentialCommand extends Command implements TerminatedListener {
 
         if (index < cmds.length) {
             Command cmd = cmds[index];
+            cmdName = cmd.getClass().toString();
             cmd.shouldBeReplaced = false;
             Scheduler.instance.add(cmd);
         }
@@ -73,6 +75,7 @@ public class SequentialCommand extends Command implements TerminatedListener {
         index++;
         if (index < cmds.length) {
             Command cmd = cmds[index];
+            cmdName = cmd.getClass().toString();
             cmd.shouldBeReplaced = false;
             Scheduler.instance.add(cmd);
         }

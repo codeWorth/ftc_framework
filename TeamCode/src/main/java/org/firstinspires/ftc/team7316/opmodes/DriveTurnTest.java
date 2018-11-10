@@ -17,7 +17,7 @@ public class DriveTurnTest extends AutoBaseOpMode {
 
     @Override
     public void onInit() {
-        Scheduler.instance.add(new TurnGyroSimple(90));
+        Scheduler.instance.add(new TurnGyroSimple(42));
         Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         timer.reset();
     }

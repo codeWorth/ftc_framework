@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.team7316.commands;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.team7316.util.Constants;
 import org.firstinspires.ftc.team7316.util.GyroAngles;
 import org.firstinspires.ftc.team7316.util.Hardware;
@@ -11,7 +13,8 @@ public class TurnGyroSimple extends Command {
 
     double power = 0.7;
     int deltaHeading = 0;
-    private GyroAngles angles;
+    public GyroAngles angles;
+    ElapsedTime timer = new ElapsedTime();
 
     public TurnGyroSimple(int deltaHeading) {
         this(deltaHeading, 0.6);
@@ -34,6 +37,7 @@ public class TurnGyroSimple extends Command {
         Hardware.instance.gyroWrapper.resetHeading(inititalAngles.yaw);
         inititalAngles.heading = 0;
         this.angles = inititalAngles;
+        timer.reset();
     }
 
     @Override
@@ -60,7 +64,7 @@ public class TurnGyroSimple extends Command {
 
     @Override
     public boolean shouldRemove() {
-        return Math.abs(this.deltaHeading - angles.heading) < 1 && Math.abs(Hardware.instance.imu.getAngularVelocity().yRotationRate) < 0.2;
+        return timer.seconds() > 3 || (Math.abs(this.deltaHeading - angles.heading) < 2 && Math.abs(Hardware.instance.imu.getAngularVelocity().yRotationRate) < 0.2);
     }
 
     @Override

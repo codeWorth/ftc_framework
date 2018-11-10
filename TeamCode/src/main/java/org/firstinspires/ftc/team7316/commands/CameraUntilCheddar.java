@@ -11,24 +11,26 @@ import ftc.vision.SimpleFrameGrabber;
 public class CameraUntilCheddar extends Command {
 
     public static MatOfPoint contour = null;
+    ImageProcess p;
 
     @Override
     public void init() {
-        ImageProcess.start();
+        contour = null;
+        p = new ImageProcess();
+//        ImageProcess.start();
     }
 
     @Override
     public void loop() {
+        contour = p.processImage(ImageProcess.sourceImg);
     }
 
     @Override
     public boolean shouldRemove() {
-        return false;
+        return contour != null;
     }
 
     @Override
     protected void end() {
-        ImageProcess.stop();
-        contour = ImageProcess.grabContour();
     }
 }

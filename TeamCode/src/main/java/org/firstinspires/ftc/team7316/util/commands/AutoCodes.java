@@ -31,33 +31,37 @@ public class AutoCodes {
 
     public static SequentialCommand blueDoubleCheddarSequence() {
         ClimbForPosition lowerClimber = new ClimbForPosition(Constants.CLIMB_MOTOR_EXTENDED);
-        StrafeForTime strafeOffHook = new StrafeForTime(0.5, true);
         DriveDistance driveAwayFromLander = new DriveDistance(Constants.inchesToTicks(5));
         ClimbForPosition compactClimber = new ClimbForPosition(Constants.CLIMB_MOTOR_COMPACTED);
 
         ResetAngle reset1 = new ResetAngle();
         CameraUntilCheddar findCheddar1 = new CameraUntilCheddar();
         TurnTowardsCheddar turnCheddar1 = new TurnTowardsCheddar();
-        CameraUntilCheddar findCheddar2 = new CameraUntilCheddar();
-        TurnTowardsCheddar turnCheddar2 = new TurnTowardsCheddar();
+//        CameraUntilCheddar findCheddar2 = new CameraUntilCheddar();
+//        TurnTowardsCheddar turnCheddar2 = new TurnTowardsCheddar();
 
         DriveDistance driveToCheddar1 = new DriveDistance(Constants.inchesToTicks(Constants.CHEDDAR_DISTANCE1));
         DriveDistance driveBackFromCheddar1 = new DriveDistance(-Constants.inchesToTicks(Constants.CHEDDAR_DISTANCE1 - Constants.RETURN_SPACING));
         TurnTowardsCorridor turnTowardsCorridor = new TurnTowardsCorridor();
-        DriveToCorridor driveToCorridor = new DriveToCorridor();
+        DriveDistance driveToCorridor = new DriveDistance(Constants.inchesToTicks(Constants.CORRIDOR_DISTANCE));
+//        DriveToCorridor driveToCorridor = new DriveToCorridor();
 
         TurnGyroSimple turnAlongCorridor = new TurnGyroSimple(45);
-        DriveDistance driveToBox = new DriveDistance((int) Constants.BOX_DISTANCE);
+        DriveDistance driveToBox = new DriveDistance(Constants.inchesToTicks(Constants.BOX_DISTANCE));
         MovePlateServo dropMarker = new MovePlateServo(true);
-        Wait waitReturnPlateServo = new Wait(0.5);
+        Wait waitReturnPlateServo = new Wait(0.2);
         MovePlateServo pullBackServo = new MovePlateServo(false);
+        Wait waitReturnPlateServo1 = new Wait(0.2);
+        MovePlateServo dropMarker1 = new MovePlateServo(true);
+        Wait waitReturnPlateServo2 = new Wait(0.2);
+        MovePlateServo pullBackServo2 = new MovePlateServo(false);
         TurnGyroSimple turnTowardsCheddar = new TurnGyroSimple(135);
 
         ResetAngle reset2 = new ResetAngle();
         CameraUntilCheddar findCheddar3 = new CameraUntilCheddar();
         TurnTowardsCheddar turnCheddar3 = new TurnTowardsCheddar();
-        CameraUntilCheddar findCheddar4 = new CameraUntilCheddar();
-        TurnTowardsCheddar turnCheddar4 = new TurnTowardsCheddar();
+//        CameraUntilCheddar findCheddar4 = new CameraUntilCheddar();
+//        TurnTowardsCheddar turnCheddar4 = new TurnTowardsCheddar();
 
         DriveDistance driveToCheddar2 = new DriveDistance(Constants.inchesToTicks(Constants.CHEDDAR_DISTANCE2));
         DriveDistance driveBackFromCheddar2 = new DriveDistance(-Constants.inchesToTicks(Constants.CHEDDAR_DISTANCE2));
@@ -69,14 +73,13 @@ public class AutoCodes {
 
         return new SequentialCommand(
                 lowerClimber,
-                strafeOffHook,
                 driveAwayFromLander,
                 compactClimber,
                 reset1,
                 findCheddar1,
                 turnCheddar1,
-                findCheddar2,
-                turnCheddar2,
+//                findCheddar2,
+//                turnCheddar2,
                 driveToCheddar1,
                 driveBackFromCheddar1,
                 turnTowardsCorridor,
@@ -86,17 +89,42 @@ public class AutoCodes {
                 dropMarker,
                 waitReturnPlateServo,
                 pullBackServo,
+                waitReturnPlateServo1,
+                dropMarker1,
+                waitReturnPlateServo2,
+                pullBackServo2,
                 turnTowardsCheddar,
                 reset2,
                 findCheddar3,
                 turnCheddar3,
-                findCheddar4,
-                turnCheddar4,
+//                findCheddar4,
+//                turnCheddar4,
                 driveToCheddar2,
                 driveBackFromCheddar2,
                 unturn,
                 driveToCrater,
                 breakBarrier);
+
+    }
+
+    public static SequentialCommand turnAndHitCheddar() {
+        ResetAngle reset1 = new ResetAngle();
+        CameraUntilCheddar findCheddar1 = new CameraUntilCheddar();
+        TurnTowardsCheddar turnCheddar1 = new TurnTowardsCheddar();
+//        CameraUntilCheddar findCheddar2 = new CameraUntilCheddar();
+//        TurnTowardsCheddar turnCheddar2 = new TurnTowardsCheddar();
+
+        DriveDistance driveToCheddar1 = new DriveDistance(Constants.inchesToTicks(Constants.CHEDDAR_DISTANCE1));
+
+
+        return new SequentialCommand(
+                reset1,
+                findCheddar1,
+                turnCheddar1,
+//                findCheddar2,
+//                turnCheddar2,
+                driveToCheddar1
+                );
 
     }
 

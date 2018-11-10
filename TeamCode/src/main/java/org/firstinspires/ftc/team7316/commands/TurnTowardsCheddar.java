@@ -17,10 +17,12 @@ public class TurnTowardsCheddar extends Command {
     @Override
     public void init() {
         Moments M = Imgproc.moments(CameraUntilCheddar.contour);
-        pixelPos = M.m01 / M.m00;
-        angleWanted = (int) (pixelPos * Constants.PIXELS_TO_DEGREES);
+        pixelPos = M.m10 / M.m00;
+        angleWanted = (int) Constants.pixelsToDegrees(pixelPos);
         turn = new TurnGyroSimple(angleWanted);
 
+
+        Hardware.log("angleWanted", angleWanted);
         turn.init();
     }
 
@@ -36,7 +38,7 @@ public class TurnTowardsCheddar extends Command {
 
     @Override
     protected void end() {
-        ANGLE_TURNED += Hardware.instance.gyroWrapper.angles().heading;
+        ANGLE_TURNED += turn.angles.heading;
         turn.end();
     }
 }

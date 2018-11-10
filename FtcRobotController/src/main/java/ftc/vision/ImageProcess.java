@@ -27,7 +27,7 @@ public class ImageProcess implements Runnable {
 	public static Mat stageHue = new Mat();
 	
 	private static CountDownLatch latch = new CountDownLatch(1); // use this to wait for a new frame
-	private static Mat sourceImg; // image we want to process
+	public static Mat sourceImg; // image we want to process
 
 	/**
 	 * Last processed contour
