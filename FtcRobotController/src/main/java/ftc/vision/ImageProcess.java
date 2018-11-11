@@ -23,7 +23,6 @@ public class ImageProcess implements Runnable {
 	private static final int hue = 22; // the target hue
 	private static final int radius = 8; // the variation in hue accepted
 	private static final int minS = 150; // minimum saturation
-	private static final int minV = 0; // minimum value
 	private static int minArea = 0;
 
 	public static Mat stageHue = new Mat();
@@ -78,7 +77,7 @@ public class ImageProcess implements Runnable {
 		Mat _binary = new Mat(img.rows(), img.cols(), CvType.CV_8UC1, new Scalar(0)); // the completely black and white image for the image after being filtered by hue and saturation
 		// It's called a binary because every pixel is either completely black (0,0,0) or completely white (255, 255, 255)
 
-        Core.inRange(hsv, new Scalar(hue-radius, minS, minV), new Scalar(hue+radius, 255, 255), _binary);
+        Core.inRange(hsv, new Scalar(hue-radius, minS, 0), new Scalar(hue+radius, 255, 255), _binary);
 		// the Scalar go in the order H, S, V. The max is always 255
 
         stageHue = _binary.clone();

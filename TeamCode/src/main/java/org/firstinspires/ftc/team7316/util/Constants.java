@@ -66,7 +66,7 @@ public class Constants {
     }
 
     public static double pixelsToDegrees(double pixels) {
-        return pixels * -0.160549166679 + 47.550553337;
+        return pixels * -0.153549166679 + 45.450553337;
     }
 
     /**
