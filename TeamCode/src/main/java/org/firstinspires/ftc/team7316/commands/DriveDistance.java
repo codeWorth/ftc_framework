@@ -63,12 +63,12 @@ public class DriveDistance extends Command {
     @Override
     protected void end() {
 
-        writeData("left", Hardware.instance.leftmotorWrapper.pid.dataPoints);
-        writeData("right", Hardware.instance.rightmotorWrapper.pid.dataPoints);
-
-        for (int i = 0;i < 6; i++) {
-            Log.d("---PATH---", "-----------WRITING PATH DATA---------");
-        }
+//        writeData("left", Hardware.instance.leftmotorWrapper.pid.dataPoints);
+//        writeData("right", Hardware.instance.rightmotorWrapper.pid.dataPoints);
+//
+//        for (int i = 0;i < 6; i++) {
+//            Log.d("---PATH---", "-----------WRITING PATH DATA---------");
+//        }
 
         Subsystems.instance.driveSubsystem.driveMotorSet(0,0);
     }

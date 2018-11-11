@@ -33,7 +33,10 @@ public class Constants {
     public static final double DRIVE_B_RIGHT = 400;
 
     private static final double ROBOT_RADIUS = 7; // inches
-    public static final double TURN_P = 0.018;
+    public static final double TURN_P_LEFT = 0.018;
+    public static final double TURN_P_RIGHT = 0.018;
+    public static final double TURN_DEADZONE_LEFT = 0.15;
+    public static final double TURN_DEADZONE_RIGHT = 0.1;
     public static final double TURN_I = 0;
     public static final double TURN_D = 0; //0.005;
     public static final double TURN_M = 551;

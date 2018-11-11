@@ -64,8 +64,12 @@ public class TurnGyroSimple extends Command {
 
     @Override
     public void loop() {
-        double realPower = this.power * Constants.TURN_P * (this.deltaHeading - angles.heading); //Math.signum(this.deltaHeading - angles.heading);
-        realPower += Math.signum(realPower) * 0.15;
+        double realPower;
+        if ((this.deltaHeading - angles.heading) > 0) {
+            realPower = this.power * Constants.TURN_P_RIGHT * (this.deltaHeading - angles.heading) + Constants.TURN_DEADZONE_RIGHT;
+        } else {
+            realPower = this.power * Constants.TURN_P_LEFT * (this.deltaHeading - angles.heading) + Constants.TURN_DEADZONE_LEFT;
+        }
 
         if (Math.abs(realPower) > 0.4) {
             realPower = 0.4 * Math.signum(realPower);
