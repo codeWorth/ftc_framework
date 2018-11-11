@@ -40,6 +40,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Camera;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiManager;
@@ -154,6 +155,7 @@ public class FtcRobotControllerActivity extends Activity
 
     //when the "Grab" button is pressed
     public void frameButtonOnClick(View v){
+        CameraBridgeViewBase.SHOULD_DISPLAY_FRAME = !CameraBridgeViewBase.SHOULD_DISPLAY_FRAME;
     }
 
     void myOnPause(){

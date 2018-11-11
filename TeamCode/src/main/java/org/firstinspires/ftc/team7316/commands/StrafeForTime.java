@@ -11,7 +11,7 @@ public class StrafeForTime extends Command {
 
     double seconds = 0;
     ElapsedTime time = new ElapsedTime();
-    double power = 0.75;
+    double power = 0.65;
 
     /**
      * Strafe for some amount of time at a default power
@@ -19,7 +19,7 @@ public class StrafeForTime extends Command {
      * @param direction True means positive power, false means negative power
      */
     public StrafeForTime(double time, boolean direction) {
-        this(time, direction ? 0.75 : -0.75);
+        this(time, direction ? 0.65 : -0.65);
     }
 
     public StrafeForTime(double time, double power) {

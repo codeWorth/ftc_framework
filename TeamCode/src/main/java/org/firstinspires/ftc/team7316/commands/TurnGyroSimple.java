@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.team7316.util.Constants;
 import org.firstinspires.ftc.team7316.util.GyroAngles;
 import org.firstinspires.ftc.team7316.util.Hardware;
+import org.firstinspires.ftc.team7316.util.commands.AutoDecision;
 import org.firstinspires.ftc.team7316.util.commands.Command;
 
 import java.net.HttpRetryException;
@@ -15,6 +16,8 @@ public class TurnGyroSimple extends Command {
     int deltaHeading = 0;
     public GyroAngles angles;
     ElapsedTime timer = new ElapsedTime();
+    private AutoDecision decision = null;
+    public double thresh = 2;
 
     public TurnGyroSimple(int deltaHeading) {
         this(deltaHeading, 0.6);
@@ -31,8 +34,27 @@ public class TurnGyroSimple extends Command {
         this.power = power;
     }
 
+    public TurnGyroSimple(AutoDecision decision, double angleThresh) {
+        this.power = 0.6;
+        this.decision = decision;
+        thresh = angleThresh;
+    }
+
+    public TurnGyroSimple(AutoDecision decision) {
+        this(decision, 2);
+    }
+
     @Override
     public void init() {
+        if (this.decision != null) {
+            int modA = ((int) this.decision.findNumber() - 180) % 360;
+            if (modA < 0) {
+                modA += 360;
+            }
+            modA -= 180;
+            this.deltaHeading = modA;
+        }
+
         GyroAngles inititalAngles = Hardware.instance.gyroWrapper.angles();
         Hardware.instance.gyroWrapper.resetHeading(inititalAngles.yaw);
         inititalAngles.heading = 0;
@@ -64,7 +86,7 @@ public class TurnGyroSimple extends Command {
 
     @Override
     public boolean shouldRemove() {
-        return timer.seconds() > 3 || (Math.abs(this.deltaHeading - angles.heading) < 2 && Math.abs(Hardware.instance.imu.getAngularVelocity().yRotationRate) < 0.2);
+        return timer.seconds() > 3 || (Math.abs(this.deltaHeading - angles.heading) < this.thresh && Math.abs(Hardware.instance.imu.getAngularVelocity().yRotationRate) < 0.5);
     }
 
     @Override

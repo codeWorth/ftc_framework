@@ -8,13 +8,12 @@ import org.firstinspires.ftc.team7316.util.commands.Command;
 public class TurnTowardsCorridor extends Command {
 
     TurnGyroSimple turn;
+    public static double ENDING_ANGLE = 0;
 
     @Override
     public void init() {
-        for (int i = 0; i < 10; i++) {
-            Log.d("angle towards corridor", String.valueOf(TurnTowardsCheddar.ANGLE_TURNED));
-        }
-        double angle = 90 - TurnTowardsCheddar.ANGLE_TURNED;
+        ENDING_ANGLE = 0;
+        double angle = -87 + TurnTowardsCheddar.ANGLE_TURNED;
         turn = new TurnGyroSimple((int) angle);
         turn.init();
     }
@@ -32,6 +31,7 @@ public class TurnTowardsCorridor extends Command {
 
     @Override
     protected void end() {
+        ENDING_ANGLE = turn.angles.heading;
         turn.end();
     }
 }

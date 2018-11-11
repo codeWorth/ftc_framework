@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
@@ -22,6 +23,7 @@ public class ImageProcess implements Runnable {
 	private static final int hue = 22; // the target hue
 	private static final int radius = 8; // the variation in hue accepted
 	private static final int minS = 150; // minimum saturation
+	private static final int minV = 0; // minimum value
 	private static int minArea = 0;
 
 	public static Mat stageHue = new Mat();
@@ -64,24 +66,24 @@ public class ImageProcess implements Runnable {
 	public MatOfPoint processImage(Mat img) {
 		long t = System.nanoTime();		
 				
-		minArea = img.cols() * img.rows() / 400; // what is the area of a contour that is 1/20th width and 1/20th 
+		minArea = img.cols() * img.rows() / 800; // what is the area of a contour that is 1/20th width and 1/20th
 												// height of screen? Use that value as the minimum area
 		
-		Mat hsv = new Mat(); // a new matrix that will hold the image in HSV
+		Mat hsv = new Mat(img.rows(), img.cols(), CvType.CV_8UC3, new Scalar(0,0,0)); // a new matrix that will hold the image in HSV
 		Imgproc.cvtColor(img, hsv, Imgproc.COLOR_RGB2HSV); // convert to HSV
 		
-		Mat v = new Mat(); // this is just the value part of the HSV image, will be used later
+		Mat v = new Mat(img.rows(), img.cols(), CvType.CV_8UC1, new Scalar(0)); // this is just the value part of the HSV image, will be used later
 		Core.extractChannel(hsv, v, 2); // extract it (2 is the index of the value channel)
 		
-		Mat _binary = new Mat(); // the completely black and white image for the image after being filtered by hue and saturation
+		Mat _binary = new Mat(img.rows(), img.cols(), CvType.CV_8UC1, new Scalar(0)); // the completely black and white image for the image after being filtered by hue and saturation
 		// It's called a binary because every pixel is either completely black (0,0,0) or completely white (255, 255, 255)
 
-        Core.inRange(hsv, new Scalar(hue-radius, minS, 0), new Scalar(hue+radius, 255, 255), _binary);
+        Core.inRange(hsv, new Scalar(hue-radius, minS, minV), new Scalar(hue+radius, 255, 255), _binary);
 		// the Scalar go in the order H, S, V. The max is always 255
 
         stageHue = _binary.clone();
 
-		Mat _binaryBlur = new Mat(); // we want to blur the binary to make the really small white parts go away
+		Mat _binaryBlur = new Mat(img.rows(), img.cols(), CvType.CV_8UC1, new Scalar(0)); // we want to blur the binary to make the really small white parts go away
 		Imgproc.blur(_binary, _binaryBlur, new Size(11,11)); // blur it
 		Core.inRange(_binaryBlur, new Scalar(200, 0, 0), new Scalar(255, 0, 0), _binary); // only take parts that are still bright
 		/*
@@ -103,7 +105,7 @@ public class ImageProcess implements Runnable {
 
 		Collections.sort(cs); // sort them by area
 
-		double minDensity = 0.5; // density is the area of the contour over the area of the convex hull (look up convex hull)
+		double minDensity = 0.4; // density is the area of the contour over the area of the convex hull (look up convex hull)
 		int nCheck = 10; // number of contours the check
 		nCheck = Math.min(cs.size(), nCheck); // if we have less than 10 contours, just check all of them
 

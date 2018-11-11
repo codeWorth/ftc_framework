@@ -18,7 +18,7 @@ public class Constants {
     public static final double WHEEL_RADIUS = 2; // inches
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * Math.PI;
     public static final double SLOW_SPEED = 0.6;
-    public static final long CLIMB_MOTOR_EXTENDED=-4000;
+    public static final long CLIMB_MOTOR_EXTENDED=-5200;
     public static final long CLIMB_MOTOR_COMPACTED=-1000;
 
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
@@ -39,15 +39,22 @@ public class Constants {
     public static final double TURN_M = 551;
     public static final double TURN_B = 117;
 
-    public static final double CHEDDAR_DISTANCE1 = 35;
-    public static final double CHEDDAR_DISTANCE2 = 40;
-    public static final double RETURN_SPACING = 10;
-    public static final double CORRIDOR_DISTANCE = 42;
-    public static final double BOX_DISTANCE = 46;
+    public static final double CHEDDAR_DISTANCE1 = 29;
+    public static final double CHEDDAR_DISTANCE2 = 30;
+    public static final double CHEDDAR_DISTANCE2_RETURN = 30;
+    public static final double RETURN_SPACING = 12;
+    public static final double CORRIDOR_DISTANCE = 55;
+    public static final double BOX_DISTANCE = 47;
     public static final double CRATER_DISTANCE = 115;
+    public static final int TURN_TOWARDS_ZONE_2 = 20;
+    public static final double DRIVE_TOWARDS_ZONE_2_CENTER=32;
+    public static final double DRIVE_TOWARDS_ZONE_2_SIDES=34;
+    public static final int TURN_TOWARDS_CRATER_2_RIGHT = 115;
+    public static final int TURN_TOWARDS_CRATER_2_CENTER = 135;
+    public static final int TURN_TOWARDS_CRATER_2_LEFT = 155;
 
-    public static final double MAX_TICKS_SPEED = 1500; // ticks per second
-    public static final double MAX_TICKS_ACCEL = 1000; // ticks per second per second
+    public static final double MAX_TICKS_SPEED = 2000; // ticks per second
+    public static final double MAX_TICKS_ACCEL = 900; // ticks per second per second
     public static final double MAX_DEGREES_SPEED = 120; // degrees per second
     public static final double MAX_DEGREES_ACCEL = 75; // degrees per second per second
     public static final double MIN_DRIVE_POWER = 0.15;
@@ -59,7 +66,7 @@ public class Constants {
     }
 
     public static double pixelsToDegrees(double pixels) {
-        return pixels * -0.153549166679 + 45.450553337;
+        return pixels * -0.160549166679 + 47.550553337;
     }
 
     /**

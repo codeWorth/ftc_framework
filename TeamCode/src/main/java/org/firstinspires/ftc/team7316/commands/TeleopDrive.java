@@ -19,6 +19,11 @@ public class TeleopDrive extends Command {
         double forward = OI.instance.gp1.left_stick.getY();
         double strafe = OI.instance.gp1.left_stick.getX();
         double rotate = OI.instance.gp1.right_stick.getX();
+        if(OI.instance.gp1.right_bumper.pressedState()){
+            forward*=-1;
+            strafe*=-1;
+            rotate*=-1;
+        }
 
         Hardware.instance.leftmotorWrapper.setPower(forward + rotate + strafe * 0.1);
         Hardware.instance.rightmotorWrapper.setPower(forward - rotate - strafe * 0.1);

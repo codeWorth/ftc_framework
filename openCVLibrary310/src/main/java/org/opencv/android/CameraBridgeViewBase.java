@@ -54,6 +54,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     public static final int CAMERA_ID_FRONT = 98;
     public static final int RGBA = 1;
     public static final int GRAY = 2;
+    public static boolean SHOULD_DISPLAY_FRAME = false;
 
     public CameraBridgeViewBase(Context context, int cameraId) {
         super(context);
@@ -405,7 +406,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
             }
         }
 
-        if (bmpValid && mCacheBitmap != null) {
+        if (bmpValid && mCacheBitmap != null && SHOULD_DISPLAY_FRAME) {
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
                 canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);

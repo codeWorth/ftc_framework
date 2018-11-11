@@ -18,7 +18,7 @@ import org.opencv.imgproc.Moments;
 
 import ftc.vision.ImageProcess;
 
-@Autonomous(name="Auto")
+@Autonomous(name="Auto Long")
 public class DriveAutoTest extends AutoBaseOpMode {
 
     double runningAverage1 = 0;

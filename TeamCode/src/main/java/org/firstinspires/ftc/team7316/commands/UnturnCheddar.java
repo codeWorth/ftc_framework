@@ -8,7 +8,7 @@ public class UnturnCheddar extends Command {
 
     @Override
     public void init() {
-        turn = new TurnGyroSimple((int)-TurnTowardsCheddar.ANGLE_TURNED + 45);
+        turn = new TurnGyroSimple((int)TurnTowardsCheddar.ANGLE_TURNED - 45);
         turn.init();
     }
 

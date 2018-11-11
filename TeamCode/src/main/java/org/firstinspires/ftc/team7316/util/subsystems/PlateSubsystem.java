@@ -16,7 +16,7 @@ public class PlateSubsystem extends Subsystem {
         Hardware.instance.plateServo.setPosition(0.6);
     }
     public void servoRaise(){
-        Hardware.instance.plateServo.setPosition(0.2);
+        Hardware.instance.plateServo.setPosition(0);
     }
 
     @Override

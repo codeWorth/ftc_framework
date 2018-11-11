@@ -13,18 +13,22 @@ import org.firstinspires.ftc.team7316.util.subsystems.Subsystems;
 
 import java.util.ArrayList;
 
-public class DriveDistance extends Command {
+public class DriveAngle extends Command {
     int ticks;
     long lastTime;
     private AutoDecision decision;
     double pathTime = 0;
+    double centerPower;
     ElapsedTime t = new ElapsedTime();
-    public DriveDistance(int ticks){
+
+    public DriveAngle(int ticks, double centerPower){
         this.ticks=ticks;
+        this.centerPower = centerPower;
     }
 
-    public DriveDistance(AutoDecision decision){
+    public DriveAngle(AutoDecision decision, double centerPower){
         this.decision = decision;
+        this.centerPower = centerPower;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class DriveDistance extends Command {
         Subsystems.instance.driveSubsystem.resetMotors();
         CombinedPath.LongitudalTrapezoid pth;
         if(ticks>0){
-            pth = new CombinedPath.LongitudalTrapezoid(0,ticks,Constants.MAX_TICKS_SPEED,Constants.MAX_TICKS_ACCEL);
+            pth = new CombinedPath.LongitudalTrapezoid(0,ticks, Constants.MAX_TICKS_SPEED,Constants.MAX_TICKS_ACCEL);
         }
         else {
             pth = new CombinedPath.LongitudalTrapezoid(0,ticks,-Constants.MAX_TICKS_SPEED,-Constants.MAX_TICKS_ACCEL);
@@ -53,6 +57,7 @@ public class DriveDistance extends Command {
         lastTime = System.currentTimeMillis();
 
         Subsystems.instance.driveSubsystem.driveWithPID((double)dMilis / 1000.0);
+        Hardware.instance.centermotor.setPower(centerPower);
     }
 
     @Override
