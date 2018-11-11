@@ -8,8 +8,8 @@ import org.firstinspires.ftc.team7316.util.GyroAngles;
 import org.firstinspires.ftc.team7316.util.Hardware;
 import org.firstinspires.ftc.team7316.util.Scheduler;
 import org.firstinspires.ftc.team7316.util.modes.AutoBaseOpMode;
-@Autonomous(name="Auto turn test")
-public class DriveTurnTest extends AutoBaseOpMode {
+@Autonomous(name="Auto turn test 2")
+public class DriveTurnTest2 extends AutoBaseOpMode {
 
     double dps = 0;
     int count = 0;
@@ -17,7 +17,7 @@ public class DriveTurnTest extends AutoBaseOpMode {
 
     @Override
     public void onInit() {
-        Scheduler.instance.add(new TurnGyroSimple(-90));
+        Scheduler.instance.add(new TurnGyroSimple(90));
         Hardware.instance.gyroWrapper.resetHeading(Hardware.instance.gyroWrapper.angles().yaw);
         timer.reset();
     }
