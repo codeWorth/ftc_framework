@@ -11,32 +11,7 @@ public abstract class Subsystem {
     private boolean initializedDefaultCommand_a;
     private Command defaultCommand = null;
 
-    private ArrayList<Command> currentCommandQueue = new ArrayList<>();
-
-    public Command currentCommand() {
-        if (currentCommandQueue.isEmpty()) {
-            return null;
-        } else {
-            return currentCommandQueue.get(0);
-        }
-    }
-
-    public void replaceCurrentCommand(Command newCmd) {
-        boolean oldCommandDone = this.currentCommand().pause();
-        if (oldCommandDone && !this.currentCommandQueue.isEmpty()) {
-            this.currentCommandQueue.remove(0);
-        }
-        this.currentCommandQueue.add(0, newCmd);
-    }
-
-    public void currentCommandEnded() {
-        if (!this.currentCommandQueue.isEmpty()) {
-            this.currentCommandQueue.remove(0);
-        }
-        while (!currentCommandQueue.isEmpty() && (!this.currentCommand().canResume() || this.currentCommand()._isFinished())) {
-            this.currentCommandQueue.remove(0);
-        }
-    }
+    public Command currentCommand;
 
     public Subsystem() {
         Scheduler.getInstance().registerSubsystem(this);

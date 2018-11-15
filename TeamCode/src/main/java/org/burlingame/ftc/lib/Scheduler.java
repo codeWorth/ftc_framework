@@ -4,6 +4,7 @@ import org.burlingame.ftc.lib.commands.Command;
 import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Scheduler {
 
@@ -19,10 +20,10 @@ public class Scheduler {
     public boolean inTeleop = false;
     private boolean addingFromBuffer = false;
 
-    private ArrayList<Command> newCommands = new ArrayList<>();
-    private ArrayList<Command> commands = new ArrayList<>();
+    private ArrayList<Command> newCommands = new ArrayList<>(30);
+    private LinkedList<Command> commands = new LinkedList<>();
 
-    private ArrayList<Subsystem> subsystems = new ArrayList<>();
+    private ArrayList<Subsystem> subsystems = new ArrayList<>(10);
     public void registerSubsystem(Subsystem subsystem) {
         subsystems.add(subsystem);
     }
@@ -41,9 +42,9 @@ public class Scheduler {
             return;
         }
 
-        for (Subsystem req : cmd.requiredSubsystems) {
-            commands.remove(req.currentCommand());
-            req.replaceCurrentCommand(cmd);
+        for (Subsystem sub : cmd.requiredSubsystems) {
+            commands.remove(sub.currentCommand);
+            sub.currentCommand = cmd;
         }
 
         commands.add(cmd);

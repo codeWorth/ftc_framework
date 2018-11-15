@@ -5,6 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.burlingame.ftc.lib.Hardware;
+import org.burlingame.ftc.lib.OI.OI;
 import org.burlingame.ftc.lib.Scheduler;
 import org.burlingame.ftc.lib.subsystem.Subsystems;
 
@@ -20,8 +21,8 @@ public abstract class TeleopBaseOpMode extends OpMode {
         Scheduler.getInstance().wipe();
         Hardware.setHardwareMap(hardwareMap);
         Hardware.setTelemetry(telemetry);
-        OI.createInputs(gamepad1, gamepad2);
         Subsystems.createSubsystems();
+        OI.createInputs(gamepad1, gamepad2);
         Scheduler.getInstance().init();
         onInit();
     }
@@ -29,13 +30,8 @@ public abstract class TeleopBaseOpMode extends OpMode {
 
     @Override
     public void loop() {
-        Scheduler.instance.loop();
+        Scheduler.getInstance().loop();
         onLoop();
-    }
-
-    @Override
-    public void stop() {
-        Subsystems.instance.resetSubsystems();
     }
 
     /**

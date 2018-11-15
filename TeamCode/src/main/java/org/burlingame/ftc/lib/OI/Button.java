@@ -2,10 +2,8 @@ package org.burlingame.ftc.lib.OI;
 
 import org.burlingame.ftc.lib.Scheduler;
 import org.burlingame.ftc.lib.commands.Command;
-import org.burlingame.ftc.lib.commands.CommandDelegate;
 
 import java.util.ArrayList;
-import java.util.function.BooleanSupplier;
 
 public class Button extends Command implements CommandDelegate {
 
