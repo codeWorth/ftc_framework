@@ -1,6 +1,6 @@
 package org.burlingame.ftc.lib.OI;
 
-import org.burlingame.ftc.lib.Scheduler;
+import org.burlingame.ftc.lib.commands.Scheduler;
 import org.burlingame.ftc.lib.commands.Command;
 
 import java.util.ArrayList;

@@ -10,6 +10,14 @@ public abstract class Command {
     public boolean isInited;
     private boolean cancelled;
 
+    Command next = null;
+    Command prev = null;
+
+    public void remove() {
+        prev.next = next;
+        next.prev = prev;
+    }
+
     protected abstract void execute();
     public boolean run() {
         if (!isInited) {
@@ -17,10 +25,10 @@ public abstract class Command {
         }
 
         execute();
-        return !_isFinished();
+        return _isFinished();
     }
 
-    public abstract void init();
+    protected abstract void init();
     public void _init() {
         init();
         cancelled = false;
@@ -43,12 +51,16 @@ public abstract class Command {
     }
 
 
-    public abstract void end();
+    protected abstract void end();
     public void _end() {
         end();
         isInited = false;
     }
 
-    public abstract void interrupted();
+    protected abstract void interrupted();
+    public void _interrupted() {
+        interrupted();
+        isInited = false;
+    }
 
 }

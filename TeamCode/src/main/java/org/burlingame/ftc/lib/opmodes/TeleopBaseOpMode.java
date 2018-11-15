@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.burlingame.ftc.lib.Hardware;
 import org.burlingame.ftc.lib.OI.OI;
-import org.burlingame.ftc.lib.Scheduler;
+import org.burlingame.ftc.lib.commands.Scheduler;
 import org.burlingame.ftc.lib.subsystem.Subsystems;
 
 /**
@@ -18,7 +18,7 @@ public abstract class TeleopBaseOpMode extends OpMode {
     public void init() {
         Log.i(Hardware.tag, "======================================= STARTING TELEOP ===================================================");
         Scheduler.getInstance().inTeleop = true;
-        Scheduler.getInstance().wipe();
+        Scheduler.getInstance().clearCommands();
         Hardware.setHardwareMap(hardwareMap);
         Hardware.setTelemetry(telemetry);
         Subsystems.createSubsystems();

@@ -1,9 +1,7 @@
 package org.burlingame.ftc.lib.subsystem;
 
-import org.burlingame.ftc.lib.Scheduler;
+import org.burlingame.ftc.lib.commands.Scheduler;
 import org.burlingame.ftc.lib.commands.Command;
-
-import java.util.ArrayList;
 
 public abstract class Subsystem {
 

@@ -1,10 +1,8 @@
-package org.burlingame.ftc.lib;
+package org.burlingame.ftc.lib.commands;
 
-import org.burlingame.ftc.lib.commands.Command;
 import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Scheduler {
 
@@ -21,7 +19,7 @@ public class Scheduler {
     private boolean addingFromBuffer = false;
 
     private ArrayList<Command> newCommands = new ArrayList<>(30);
-    private LinkedList<Command> commands = new LinkedList<>();
+    private SentinelNode sentinel = new SentinelNode();
 
     private ArrayList<Subsystem> subsystems = new ArrayList<>(10);
     public void registerSubsystem(Subsystem subsystem) {
@@ -38,16 +36,12 @@ public class Scheduler {
     }
 
     private void _add(Command cmd) {
-        if (cmd == null || commands.contains(cmd)) {
-            return;
-        }
-
-        for (Subsystem sub : cmd.requiredSubsystems) {
-            commands.remove(sub.currentCommand);
-            sub.currentCommand = cmd;
-        }
-
-        commands.add(cmd);
+        Command prev = sentinel.prev;
+        Command next = sentinel;
+        prev.next = cmd;
+        cmd.prev = prev;
+        cmd.next = next;
+        next.prev = cmd;
     }
 
     public void init() {
@@ -69,42 +63,70 @@ public class Scheduler {
         newCommands.clear();
         addingFromBuffer = false;
 
-        size = commands.size();
-        for (int i = 0; i < size; i++) {
-            Command cmd = commands.get(i);
-            if (!cmd.run()) {
-                commands.remove(i);
+        Command cmd = sentinel.next;
+        while (cmd != sentinel) {
+            if (cmd.run()) {
+                cmd.remove();
                 for (Subsystem sub : cmd.requiredSubsystems) {
-                    sub.currentCommandEnded();
-                    if (sub.currentCommand() == null) {
-                        if (sub.getDefaultCommand() != null) {
-                            add(sub.getDefaultCommand());
-                        }
-                    } else {
-                        add(sub.currentCommand());
+                    if (sub.getDefaultCommand() != null) {
+                        add(sub.getDefaultCommand());
                     }
                 }
-                i--;
+                cmd._end();
             }
+            cmd = cmd.next;
         }
     }
 
     public void endAuto() {
-        wipe();
+        clearCommands();
         inTeleop = true;
     }
 
     public void endTeleop() {
-        wipe();
+        clearCommands();
         inTeleop = false;
     }
 
-    public void wipe() {
+    public void clearCommands() {
         newCommands.clear();
-        for (Command cmd : commands) {
-            cmd.interrupted();
+        for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
+            cmd._interrupted();
         }
-        commands.clear();
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;
+    }
+
+    private class SentinelNode extends Command {
+        SentinelNode() {
+            super();
+            next = this;
+            prev = this;
+        }
+        @Override
+        protected void execute() {
+            throw new IllegalStateException("SentinelNode should not be called!");
+        }
+
+        @Override
+        public void init() {
+            throw new IllegalStateException("SentinelNode should not be called!");
+        }
+
+        @Override
+        protected boolean isFinished() {
+            throw new IllegalStateException("SentinelNode should not be called!");
+        }
+
+        @Override
+        public void end() {
+            throw new IllegalStateException("SentinelNode should not be called!");
+        }
+
+        @Override
+        public void interrupted() {
+            throw new IllegalStateException("SentinelNode should not be called!");
+        }
     }
 
 }

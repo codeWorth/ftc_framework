@@ -5,7 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.burlingame.ftc.lib.Hardware;
-import org.burlingame.ftc.lib.Scheduler;
+import org.burlingame.ftc.lib.commands.Scheduler;
 import org.burlingame.ftc.lib.subsystem.Subsystems;
 
 /**
@@ -26,7 +26,7 @@ public abstract class AutoBaseOpMode extends OpMode {
     public void init() {
         Log.i(Hardware.tag, "=========================== STARTING AUTO ================================");
         Scheduler.getInstance().inTeleop = false;
-        Scheduler.getInstance().wipe();
+        Scheduler.getInstance().clearCommands();
         Hardware.setHardwareMap(hardwareMap);
         Hardware.setTelemetry(telemetry);
         Subsystems.createSubsystems();
@@ -42,7 +42,7 @@ public abstract class AutoBaseOpMode extends OpMode {
 
     @Override
     public void stop() {
-        Scheduler.getInstance().wipe();
+        Scheduler.getInstance().clearCommands();
     }
 
     /**
