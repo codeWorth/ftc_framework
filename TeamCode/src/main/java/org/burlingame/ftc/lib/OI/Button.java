@@ -5,7 +5,7 @@ import org.burlingame.ftc.lib.commands.Command;
 
 import java.util.ArrayList;
 
-public class Button extends Command implements CommandDelegate {
+public class Button extends Command {
 
     private BooleanSupplier source;
     private boolean prevState;
@@ -23,7 +23,6 @@ public class Button extends Command implements CommandDelegate {
         if (!inScheduler) {
             Scheduler.getInstance().add(this);
         }
-        cmd.parent = this;
         whenPressedCommands.add(cmd);
     }
 
@@ -31,7 +30,6 @@ public class Button extends Command implements CommandDelegate {
         if (!inScheduler) {
             Scheduler.getInstance().add(this);
         }
-        cmd.parent = this;
         whileHeldCommands.add(cmd);
     }
 
@@ -39,7 +37,6 @@ public class Button extends Command implements CommandDelegate {
         if (!inScheduler) {
             Scheduler.getInstance().add(this);
         }
-        cmd.parent = this;
         whenReleasedCommands.add(cmd);
     }
 
@@ -89,13 +86,4 @@ public class Button extends Command implements CommandDelegate {
 
     }
 
-    @Override
-    public void commandEnded(Command cmd) {
-
-    }
-
-    @Override
-    public boolean shouldContinue(Command cmd) {
-        return whileHeldCommands.contains(cmd) && this.source.getAsBoolean();
-    }
 }
