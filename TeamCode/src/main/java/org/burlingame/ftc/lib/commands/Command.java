@@ -42,7 +42,6 @@ public abstract class Command {
 
     protected abstract void execute();
     public boolean run() {
-        running = true;
         if (!isInited) {
             _init();
         }
@@ -56,6 +55,7 @@ public abstract class Command {
         init();
         cancelled = false;
         isInited = true;
+        running = true;
     }
 
     protected abstract boolean isFinished();
