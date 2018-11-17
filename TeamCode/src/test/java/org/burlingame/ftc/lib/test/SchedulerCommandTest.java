@@ -2,6 +2,7 @@ package org.burlingame.ftc.lib.test;
 
 import org.burlingame.ftc.lib.commands.Command;
 import org.burlingame.ftc.lib.commands.Scheduler;
+import org.burlingame.ftc.lib.subsystem.Subsystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -227,7 +228,7 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void testSubsystemTeleDefault() {
+    public void testSubsystemTeleopDefault() {
         sched.inTeleop = true;
         DebugSubsystem s = new DebugSubsystem();
         DebugCommand auto = new DebugCommand();
@@ -258,6 +259,8 @@ public class SchedulerCommandTest {
         add.require(s);
 
         s.defaultAuto = def;
+
+        sched.registerSubsystem(s);
 
         sched.init();
         sched.loop();
@@ -296,6 +299,10 @@ public class SchedulerCommandTest {
         c2.require(s2);
         c2.require(s3);
 
+        sched.registerSubsystem(s1);
+        sched.registerSubsystem(s2);
+        sched.registerSubsystem(s3);
+
         sched.add(c1);
         sched.loop();
         assertEquals(c1, s1.currentCommand);
@@ -323,6 +330,9 @@ public class SchedulerCommandTest {
         c1.require(s1);
         c2.require(s2);
         c2.require(s3);
+        sched.registerSubsystem(s1);
+        sched.registerSubsystem(s2);
+        sched.registerSubsystem(s3);
 
         sched.add(c1);
         sched.loop();
@@ -349,8 +359,8 @@ public class SchedulerCommandTest {
         DebugCommand c3 = new DebugCommand();
         c1.require(s);
         c3.require(s);
-
         Command par = c1.and(c2);
+        sched.registerSubsystem(s);
 
         sched.add(par);
         sched.loop();
@@ -380,8 +390,8 @@ public class SchedulerCommandTest {
         DebugCommand c4 = new DebugCommand();
         c1.require(s);
         c4.require(s);
-
         Command seq = c1.then(c2);
+        sched.registerSubsystem(s);
 
         sched.add(seq);
         sched.loop();
@@ -416,6 +426,21 @@ public class SchedulerCommandTest {
         assertFalse(c2.isRunning());
         assertFalse(c3.isRunning());
         assertTrue(c4.isRunning());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldErrorWhenParallelCommandsHaveIntersectingSubsystemRequirements() {
+        DebugSubsystem s1 = new DebugSubsystem();
+        DebugSubsystem s2 = new DebugSubsystem();
+        DebugSubsystem s3 = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s1);
+        c1.require(s2);
+        c2.require(s2);
+        c2.require(s3);
+
+        c1.and(c2);
     }
 
 }

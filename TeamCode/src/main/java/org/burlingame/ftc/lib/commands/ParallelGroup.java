@@ -18,6 +18,11 @@ public class ParallelGroup extends Command {
     @Override
     public ParallelGroup and(Command other) {
         children.add(other);
+        for (Subsystem sub: requiredSubsystems) {
+            if (other.requiredSubsystems.contains(sub)) {
+                throw new IllegalArgumentException("Parallel commands should not require the same subsystem!");
+            }
+        }
         require(other.requiredSubsystems);
         return this;
     }
