@@ -13,13 +13,11 @@ public abstract class Command {
     private boolean running = false;
     private boolean cancelled;
 
-    CommandParent parent;
-
     // Linked list
     Command next = null;
     Command prev = null;
 
-    public Command whilst(Command other) {
+    public Command and(Command other) {
         return new ParallelGroup(this, other);
     }
 
@@ -79,9 +77,6 @@ public abstract class Command {
         end();
         isInited = false;
         running = false;
-        if (parent != null) {
-            parent.onCommandFinish(this, false);
-        }
     }
 
     protected abstract void interrupted();
@@ -89,9 +84,6 @@ public abstract class Command {
         interrupted();
         isInited = false;
         running = false;
-        if (parent != null) {
-            parent.onCommandFinish(this, true);
-        }
     }
 
     public boolean isRunning() {

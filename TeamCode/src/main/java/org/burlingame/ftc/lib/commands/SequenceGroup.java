@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class SequenceGroup extends Command implements CommandParent {
+public class SequenceGroup extends Command {
 
     private List<Command> children = new LinkedList<>();
     private ListIterator<Command> iterator;
@@ -12,18 +12,12 @@ public class SequenceGroup extends Command implements CommandParent {
     private boolean finished = false;
 
     SequenceGroup(Command first, Command second) {
-        children.add(first);
-        children.add(second);
-        first.parent = this;
-        second.parent = this;
-        require(first.requiredSubsystems);
-        require(second.requiredSubsystems);
+        this.then(first).then(second);
     }
 
     @Override
     public SequenceGroup then(Command other) {
         children.add(other);
-        other.parent = this;
         require(other.requiredSubsystems);
         return this;
     }
@@ -32,12 +26,20 @@ public class SequenceGroup extends Command implements CommandParent {
     protected void init() {
         iterator = children.listIterator();
         current = iterator.next();
-        Scheduler.getInstance().add(current);
         finished = false;
     }
 
     @Override
     protected void execute() {
+        if (current.run()) {
+            current._end();
+            iterator.remove();
+            if (iterator.hasNext()) {
+                current = iterator.next();
+            } else {
+                finished = true;
+            }
+        }
     }
 
     @Override
@@ -53,18 +55,5 @@ public class SequenceGroup extends Command implements CommandParent {
     @Override
     protected void interrupted() {
 
-    }
-
-    @Override
-    public void onCommandFinish(Command command, boolean interrupted) {
-        if (command != current) {
-            throw new IllegalStateException("onCommandFinish was called on the wrong command!");
-        }
-        if (iterator.hasNext()) {
-            current = iterator.next();
-            Scheduler.getInstance().add(current);
-        } else {
-            finished = true;
-        }
     }
 }

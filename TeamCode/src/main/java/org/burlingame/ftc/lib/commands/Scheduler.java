@@ -3,6 +3,12 @@ package org.burlingame.ftc.lib.commands;
 import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
 public class Scheduler {
 
@@ -18,7 +24,7 @@ public class Scheduler {
     public boolean inTeleop = false;
     private boolean addingFromBuffer = false;
 
-    private ArrayList<Command> newCommands = new ArrayList<>(30);
+    private LinkedList<Command> newCommands = new LinkedList<>();
     private SentinelNode sentinel = new SentinelNode();
 
     private ArrayList<Subsystem> subsystems = new ArrayList<>(10);
@@ -26,6 +32,12 @@ public class Scheduler {
         subsystems.add(subsystem);
     }
 
+    /**
+     * Schedule a command for execution. It will not be executed immediately. Commands added later
+     * will take precedent over earlier commands.
+     *
+     * @param cmd the command to add
+     */
     public void add(Command cmd) {
         if (addingFromBuffer) {
             throw new IllegalArgumentException("Can't add a command at this time, either race condition, or someone put Scheduler.getInstance().add(command) in a constructor (put in initialize!)");
@@ -52,15 +64,32 @@ public class Scheduler {
         }
     }
 
-    public void loop() {
-        int size = newCommands.size();
+    private void addCommandsFromBuffer() {
         addingFromBuffer = true;
-        for (int i = 0; i < size; i++) {
-            Command cmd = newCommands.get(i);
-            _add(cmd);
+
+        Set<Subsystem> reserved = new HashSet<>();
+
+        for (Iterator<Command> it = newCommands.descendingIterator(); it.hasNext(); ) {
+            Command cmd = it.next();
+            boolean shouldAdd = true;
+            for (Subsystem sub : cmd.requiredSubsystems) {
+                if (reserved.contains(sub)) {
+                    shouldAdd = false;
+                    break;
+                }
+            }
+            if (shouldAdd) {
+                reserved.addAll(cmd.requiredSubsystems);
+                _add(cmd);
+            }
         }
+
         newCommands.clear();
         addingFromBuffer = false;
+    }
+
+    public void loop() {
+        addCommandsFromBuffer();
 
         for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
             if (cmd.run()) {
