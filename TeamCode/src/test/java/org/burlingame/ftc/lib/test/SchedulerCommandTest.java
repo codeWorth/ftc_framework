@@ -1,5 +1,7 @@
 package org.burlingame.ftc.lib.test;
 
+import android.util.Log;
+
 import junit.framework.Assert;
 
 import org.burlingame.ftc.lib.commands.Command;
@@ -17,6 +19,7 @@ public class SchedulerCommandTest {
     @Before
     public void setUpScheduler() {
         sched.reset();
+        sched.inTeleop = false;
     }
 
     @Test
@@ -248,39 +251,38 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void testSubsystemDefaultInterrupt() {
+    public void shouldInterruptDefaultCommandWhenNewCommandAdded() {
         sched.inTeleop = false;
         DebugSubsystem s = new DebugSubsystem();
-        DebugCommand c1 = new DebugCommand();
-        DebugCommand c2 = new DebugCommand();
-        c1.require(s);
-        c2.require(s);
+        DebugCommand def = new DebugCommand();
+        DebugCommand add = new DebugCommand();
+        def.require(s);
+        add.require(s);
 
-        s.defaultAuto = c1;
+        s.defaultAuto = def;
 
         sched.init();
         sched.loop();
+        def.testAssert(1, 1, 0, 0);
+        add.testAssert(0, 0, 0, 0);
 
-        c1.testAssert(1, 1, 0, 0);
-        c2.testAssert(0, 0, 0, 0);
-
-        sched.add(c2);
+        sched.add(add);
         sched.loop();
-        c1.testAssert(1, 2, 2, 0, 1);
-        c2.testAssert(1, 1, 1, 0, 0);
-
-        sched.loop();
-        c1.testAssert(1, 2,0, 1);
-        c2.testAssert(1, 2,0, 0);
-
-        c2.isFinished = true;
-        sched.loop();
-        c1.testAssert(1, 2,0, 1);
-        c2.testAssert(1, 3,1, 0);
+        def.testAssert(1, 1, 1, 0, 1);
+        add.testAssert(1, 1, 1, 0, 0);
 
         sched.loop();
-        c1.testAssert(2, 3,0, 1);
-        c2.testAssert(1, 3,1, 0);
+        def.testAssert(1, 1,0, 1);
+        add.testAssert(1, 2,0, 0);
+
+        add.isFinished = true;
+        sched.loop();
+        def.testAssert(1, 1,0, 1);
+        add.testAssert(1, 3,1, 0);
+
+        sched.loop();
+        def.testAssert(2, 2,0, 1);
+        add.testAssert(1, 3,1, 0);
 
     }
 }

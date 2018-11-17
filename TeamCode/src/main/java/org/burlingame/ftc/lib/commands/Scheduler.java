@@ -4,11 +4,9 @@ import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 public class Scheduler {
 
@@ -50,6 +48,7 @@ public class Scheduler {
     private void _add(Command cmd) {
         Command prev = sentinel.prev;
         Command next = sentinel;
+
         prev.next = cmd;
         cmd.prev = prev;
         cmd.next = next;
@@ -58,30 +57,53 @@ public class Scheduler {
 
     public void init() {
         for (Subsystem sub : subsystems) {
-            if (sub.getDefaultCommand() != null) {
-                _add(sub.getDefaultCommand());
-            }
+            addDefaultCommand(sub);
+        }
+    }
+
+    private void addDefaultCommand(Subsystem sub) {
+        Command def = sub.getDefaultCommand();
+        System.out.println("adding default " + def);
+        if (def != null) {
+            add(def);
         }
     }
 
     private void addCommandsFromBuffer() {
         addingFromBuffer = true;
 
-        Set<Subsystem> reserved = new HashSet<>();
+        Map<Subsystem, Command> reserved = new HashMap<>();
+        LinkedList<Command> actuallyAdded = new LinkedList<>();
 
+        // Go in reverse order, since newer commands take precedent.
         for (Iterator<Command> it = newCommands.descendingIterator(); it.hasNext(); ) {
             Command cmd = it.next();
             boolean shouldAdd = true;
             for (Subsystem sub : cmd.requiredSubsystems) {
-                if (reserved.contains(sub)) {
+                if (reserved.containsKey(sub)) {
                     shouldAdd = false;
                     break;
                 }
             }
             if (shouldAdd) {
-                reserved.addAll(cmd.requiredSubsystems);
-                _add(cmd);
+                for (Subsystem sub: cmd.requiredSubsystems) {
+                    reserved.put(sub, cmd);
+                }
+                actuallyAdded.addFirst(cmd);  // Add the reversed commands in reversed order
             }
+        }
+
+        for (Subsystem sub : reserved.keySet()) {
+            Command cmd = reserved.get(sub);
+            if (sub.currentCommand != null) {
+                sub.currentCommand._interrupted();
+                sub.currentCommand.remove();
+            }
+            sub.currentCommand = cmd;
+        }
+
+        for (Command cmd: actuallyAdded) {
+            _add(cmd);
         }
 
         newCommands.clear();
@@ -90,14 +112,14 @@ public class Scheduler {
 
     public void loop() {
         addCommandsFromBuffer();
+        System.out.println(sentinel);
 
         for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
             if (cmd.run()) {
                 cmd.remove();
                 for (Subsystem sub : cmd.requiredSubsystems) {
-                    if (sub.getDefaultCommand() != null) {
-                        add(sub.getDefaultCommand());
-                    }
+                    sub.currentCommand = null;
+                    addDefaultCommand(sub);
                 }
                 cmd._end();
             }
@@ -163,6 +185,25 @@ public class Scheduler {
         @Override
         public void interrupted() {
             throw new IllegalStateException("SentinelNode should not be called!");
+        }
+
+        @Override
+        public String toString() {
+            if (this.next == this) {
+                return "[]";
+            }
+            if (this.next.next == this) {
+                return "[" + this.next + "]";
+            }
+            StringBuilder sb = new StringBuilder("[");
+            Command cmd = this.next;
+            sb.append(cmd);
+            for (cmd = cmd.next; cmd.next != sentinel; cmd = cmd.next) {
+                sb.append(", ");
+                sb.append(cmd);
+            }
+            sb.append("]");
+            return sb.toString();
         }
     }
 
