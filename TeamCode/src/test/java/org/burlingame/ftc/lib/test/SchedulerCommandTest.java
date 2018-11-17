@@ -285,4 +285,34 @@ public class SchedulerCommandTest {
         add.testAssert(1, 3,1, 0);
 
     }
+
+    @Test
+    public void shouldInterruptPreviousCommandWhenNewCommandAdded() {
+        DebugSubsystem s1 = new DebugSubsystem();
+        DebugSubsystem s2 = new DebugSubsystem();
+        DebugSubsystem s3 = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s1);
+        c1.require(s2);
+        c2.require(s2);
+        c2.require(s3);
+
+        sched.add(c1);
+        sched.loop();
+        Assert.assertEquals(s1.currentCommand, c1);
+        Assert.assertEquals(s2.currentCommand, c1);
+        Assert.assertNull(s3.currentCommand);
+        c1.testAssert(1, 1, 0, 0);
+        c2.testAssert(0, 0, 0, 0);
+
+        sched.add(c2);
+        sched.loop();
+        Assert.assertNull(s1.currentCommand);
+        Assert.assertEquals(s2.currentCommand, c2);
+        Assert.assertEquals(s3.currentCommand, c2);
+        c1.testAssert(1, 1, 0, 1);
+        c2.testAssert(1, 1, 0, 0);
+
+    }
 }

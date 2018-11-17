@@ -30,6 +30,7 @@ public class DebugCommand extends Command {
     public void testAssert(int init, int exec, int end, int inter) {
         Assert.assertEquals(init, initCalled);
         Assert.assertEquals(exec, executeCalled);
+        Assert.assertEquals(exec, isFinishedCalled);
         Assert.assertEquals(end, endCalled);
         Assert.assertEquals(inter, interruptedCalled);
     }

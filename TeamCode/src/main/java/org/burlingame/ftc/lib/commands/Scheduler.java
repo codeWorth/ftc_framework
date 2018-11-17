@@ -63,7 +63,6 @@ public class Scheduler {
 
     private void addDefaultCommand(Subsystem sub) {
         Command def = sub.getDefaultCommand();
-        System.out.println("adding default " + def);
         if (def != null) {
             add(def);
         }
@@ -95,9 +94,13 @@ public class Scheduler {
 
         for (Subsystem sub : reserved.keySet()) {
             Command cmd = reserved.get(sub);
-            if (sub.currentCommand != null) {
-                sub.currentCommand._interrupted();
-                sub.currentCommand.remove();
+            Command existing = sub.currentCommand;
+            if (existing != null) {
+                existing._interrupted();
+                for (Subsystem existingSub : existing.requiredSubsystems) {
+                    existingSub.currentCommand = null;
+                }
+                existing.remove();
             }
             sub.currentCommand = cmd;
         }
@@ -112,7 +115,6 @@ public class Scheduler {
 
     public void loop() {
         addCommandsFromBuffer();
-        System.out.println(sentinel);
 
         for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
             if (cmd.run()) {
