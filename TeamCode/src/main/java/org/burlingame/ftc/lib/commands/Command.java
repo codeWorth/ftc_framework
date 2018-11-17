@@ -2,16 +2,38 @@ package org.burlingame.ftc.lib.commands;
 
 import org.burlingame.ftc.lib.subsystem.Subsystem;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Command {
 
-    public ArrayList<Subsystem> requiredSubsystems = new ArrayList<>();
-    public boolean isInited;
+    public Set<Subsystem> requiredSubsystems = new HashSet<>();
+    private boolean isInited;
+    private boolean running = false;
     private boolean cancelled;
 
+    CommandParent parent;
+
+    // Linked list
     Command next = null;
     Command prev = null;
+
+    public Command whilst(Command other) {
+        return new ParallelGroup(this, other);
+    }
+
+    public Command then(Command other) {
+        return new SequenceGroup(this, other);
+    }
+
+    public void require(Subsystem subsystem) {
+        requiredSubsystems.add(subsystem);
+    }
+
+    public void require(Collection<Subsystem> subsystems) {
+        requiredSubsystems.addAll(subsystems);
+    }
 
     public void remove() {
         prev.next = next;
@@ -20,6 +42,7 @@ public abstract class Command {
 
     protected abstract void execute();
     public boolean run() {
+        running = true;
         if (!isInited) {
             _init();
         }
@@ -55,12 +78,24 @@ public abstract class Command {
     public void _end() {
         end();
         isInited = false;
+        running = false;
+        if (parent != null) {
+            parent.onCommandFinish(this, false);
+        }
     }
 
     protected abstract void interrupted();
     public void _interrupted() {
         interrupted();
         isInited = false;
+        running = false;
+        if (parent != null) {
+            parent.onCommandFinish(this, true);
+        }
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
 }

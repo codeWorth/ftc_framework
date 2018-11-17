@@ -38,11 +38,8 @@ public abstract class Subsystem {
         int reqs = cmd.requiredSubsystems.size();
         if (reqs == 0 || reqs > 1) {
             throw new IllegalArgumentException("Default command must require exactly 1 subsystem");
-        } else {
-            Subsystem sub = cmd.requiredSubsystems.get(0);
-            if (sub != this) {
-                throw new IllegalArgumentException("Default command must require its subsystem");
-            }
+        } else if (!cmd.requiredSubsystems.contains(this)) {
+            throw new IllegalArgumentException("Default command must require its subsystem");
         }
     }
 
