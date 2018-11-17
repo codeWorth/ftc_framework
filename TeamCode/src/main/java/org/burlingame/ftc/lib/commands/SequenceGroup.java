@@ -32,6 +32,7 @@ public class SequenceGroup extends Command implements CommandParent {
     protected void init() {
         iterator = children.listIterator();
         current = iterator.next();
+        Scheduler.getInstance().add(current);
         finished = false;
     }
 
@@ -61,6 +62,7 @@ public class SequenceGroup extends Command implements CommandParent {
         }
         if (iterator.hasNext()) {
             current = iterator.next();
+            Scheduler.getInstance().add(current);
         } else {
             finished = true;
         }

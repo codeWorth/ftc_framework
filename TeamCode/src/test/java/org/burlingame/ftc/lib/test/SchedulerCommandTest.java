@@ -172,18 +172,42 @@ public class SchedulerCommandTest {
         c3.testAssert(0, 0, 0, 0);
 
         sched.loop();
-        c1.testAssert(2, 2, 0, 0);
+        c1.testAssert(1, 2, 0, 0);
         c2.testAssert(0, 0, 0, 0);
         c3.testAssert(0, 0, 0, 0);
 
         c1.isFinished = true;
         sched.loop();
-        c1.testAssert(3, 3, 1, 0);
+        assertTrue(c.isRunning());
+        c1.testAssert(1, 3, 1, 0);
         c2.testAssert(0, 0, 0, 0);
         c3.testAssert(0, 0, 0, 0);
 
         sched.loop();
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 1, 0, 0);
+        c3.testAssert(0, 0, 0, 0);
+
+        c2.isFinished = true;
+        c3.isFinished = true;
+        sched.loop();
+        assertTrue(c.isRunning());
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 2, 1, 0);
+        c3.testAssert(0, 0, 0, 0);
+
+        sched.loop();
+        assertTrue(c.isRunning());
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 2, 1, 0);
+        c3.testAssert(1, 1, 1, 0);
+
+        sched.loop();
         assertFalse(c.isRunning());
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 2, 1, 0);
+        c3.testAssert(1, 1, 1, 0);
+
     }
 
 }
