@@ -54,6 +54,6 @@ public class SequenceGroup extends Command {
 
     @Override
     protected void interrupted() {
-
+        current._interrupted();
     }
 }

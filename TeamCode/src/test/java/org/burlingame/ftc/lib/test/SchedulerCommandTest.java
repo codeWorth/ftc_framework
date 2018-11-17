@@ -1,15 +1,13 @@
 package org.burlingame.ftc.lib.test;
 
-import android.util.Log;
-
-import junit.framework.Assert;
-
 import org.burlingame.ftc.lib.commands.Command;
 import org.burlingame.ftc.lib.commands.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 public class SchedulerCommandTest {
@@ -224,8 +222,8 @@ public class SchedulerCommandTest {
 
         sched.loop();
         sched.loop();
-        Assert.assertTrue(auto.isRunning());
-        Assert.assertFalse(tele.isRunning());
+        assertTrue(auto.isRunning());
+        assertFalse(tele.isRunning());
     }
 
     @Test
@@ -246,12 +244,12 @@ public class SchedulerCommandTest {
 
         sched.loop();
         sched.loop();
-        Assert.assertFalse(auto.isRunning());
-        Assert.assertTrue(tele.isRunning());
+        assertFalse(auto.isRunning());
+        assertTrue(tele.isRunning());
     }
 
     @Test
-    public void shouldInterruptDefaultCommandWhenNewCommandAdded() {
+    public void shouldInterruptDefaultCommandWhenAddedNewCommand() {
         sched.inTeleop = false;
         DebugSubsystem s = new DebugSubsystem();
         DebugCommand def = new DebugCommand();
@@ -287,7 +285,7 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void shouldInterruptPreviousCommandWhenNewCommandAdded() {
+    public void shouldInterruptPreviousCommandWhenAddedNewCommand() {
         DebugSubsystem s1 = new DebugSubsystem();
         DebugSubsystem s2 = new DebugSubsystem();
         DebugSubsystem s3 = new DebugSubsystem();
@@ -300,19 +298,124 @@ public class SchedulerCommandTest {
 
         sched.add(c1);
         sched.loop();
-        Assert.assertEquals(s1.currentCommand, c1);
-        Assert.assertEquals(s2.currentCommand, c1);
-        Assert.assertNull(s3.currentCommand);
+        assertEquals(c1, s1.currentCommand);
+        assertEquals(c1, s2.currentCommand);
+        assertNull(s3.currentCommand);
         c1.testAssert(1, 1, 0, 0);
         c2.testAssert(0, 0, 0, 0);
 
         sched.add(c2);
         sched.loop();
-        Assert.assertNull(s1.currentCommand);
-        Assert.assertEquals(s2.currentCommand, c2);
-        Assert.assertEquals(s3.currentCommand, c2);
+        assertNull(s1.currentCommand);
+        assertEquals(c2, s2.currentCommand);
+        assertEquals(c2, s3.currentCommand);
         c1.testAssert(1, 1, 0, 1);
         c2.testAssert(1, 1, 0, 0);
-
     }
+
+    @Test
+    public void shouldNotInterruptWhenAddedDisjointRequires() {
+        DebugSubsystem s1 = new DebugSubsystem();
+        DebugSubsystem s2 = new DebugSubsystem();
+        DebugSubsystem s3 = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s1);
+        c2.require(s2);
+        c2.require(s3);
+
+        sched.add(c1);
+        sched.loop();
+        assertEquals(c1, s1.currentCommand);
+        assertNull(s2.currentCommand);
+        assertNull(s3.currentCommand);
+        c1.testAssert(1, 1, 0, 0);
+        c2.testAssert(0, 0, 0, 0);
+
+        sched.add(c2);
+        sched.loop();
+        assertEquals(c1, s1.currentCommand);
+        assertEquals(c2, s2.currentCommand);
+        assertEquals(c2, s3.currentCommand);
+        c1.testAssert(1, 2, 0, 0);
+        c2.testAssert(1, 1, 0, 0);
+    }
+
+    @Test
+    public void shouldInterruptParallelWhenAddedNewCommand() {
+        DebugSubsystem s = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        DebugCommand c3 = new DebugCommand();
+        c1.require(s);
+        c3.require(s);
+
+        Command par = c1.and(c2);
+
+        sched.add(par);
+        sched.loop();
+        assertEquals(par, s.currentCommand);
+        assertTrue(par.isRunning());
+        assertTrue(c1.isRunning());
+        assertTrue(c2.isRunning());
+        assertFalse(c3.isRunning());
+
+        sched.add(c3);
+        sched.loop();
+        assertEquals(c3, s.currentCommand);
+        assertTrue(c1.interruptedCalled > 0);
+        assertTrue(c2.interruptedCalled > 0);
+        assertFalse(par.isRunning());
+        assertFalse(c1.isRunning());
+        assertFalse(c2.isRunning());
+        assertTrue(c3.isRunning());
+    }
+
+    @Test
+    public void shouldInterruptSequentialWhenAddedNewCommand() {
+        DebugSubsystem s = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        DebugCommand c3 = new DebugCommand();
+        DebugCommand c4 = new DebugCommand();
+        c1.require(s);
+        c4.require(s);
+
+        Command seq = c1.then(c2);
+
+        sched.add(seq);
+        sched.loop();
+        assertEquals(seq, s.currentCommand);
+        assertTrue(seq.isRunning());
+        assertTrue(c1.isRunning());
+        assertFalse(c2.isRunning());
+        assertFalse(c3.isRunning());
+        assertFalse(c4.isRunning());
+
+        c1.isFinished = true;
+        sched.loop();
+        sched.loop();
+        assertTrue(seq.isRunning());
+        assertFalse(c1.isRunning());
+        assertTrue(c2.isRunning());
+        assertFalse(c3.isRunning());
+        assertFalse(c4.isRunning());
+
+        sched.add(c4);
+        sched.loop();
+        assertEquals(c4, s.currentCommand);
+        assertTrue(c1.endCalled > 0);
+        assertTrue(c1.interruptedCalled == 0);
+        assertTrue(c2.endCalled == 0);
+        assertTrue(c2.interruptedCalled > 0);
+        assertTrue(c3.endCalled == 0);
+        assertTrue(c3.interruptedCalled == 0);
+
+        assertFalse(seq.isRunning());
+        assertFalse(c1.isRunning());
+        assertFalse(c2.isRunning());
+        assertFalse(c3.isRunning());
+        assertTrue(c4.isRunning());
+    }
+
 }
