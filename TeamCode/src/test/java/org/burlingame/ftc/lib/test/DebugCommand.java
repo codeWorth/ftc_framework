@@ -34,7 +34,7 @@ public class DebugCommand extends Command {
         Assert.assertEquals(inter, interruptedCalled);
     }
 
-    public void clear() {
+    public void reset() {
         initCalled = 0;
         executeCalled = 0;
         isFinishedCalled = 0;

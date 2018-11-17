@@ -53,7 +53,6 @@ public class Scheduler {
     }
 
     public void loop() {
-
         int size = newCommands.size();
         addingFromBuffer = true;
         for (int i = 0; i < size; i++) {
@@ -63,8 +62,7 @@ public class Scheduler {
         newCommands.clear();
         addingFromBuffer = false;
 
-        Command cmd = sentinel.next;
-        while (cmd != sentinel) {
+        for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
             if (cmd.run()) {
                 cmd.remove();
                 for (Subsystem sub : cmd.requiredSubsystems) {
@@ -74,7 +72,6 @@ public class Scheduler {
                 }
                 cmd._end();
             }
-            cmd = cmd.next;
         }
     }
 

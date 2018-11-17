@@ -263,4 +263,40 @@ public class SchedulerCommandTest {
         Assert.assertTrue(tele.isRunning());
     }
 
+    @Test
+    public void testSubsystemDefaultInterrupt() {
+        sched.inTeleop = false;
+        DebugSubsystem s = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s);
+        c2.require(s);
+
+        s.defaultAuto = c1;
+
+        sched.init();
+        sched.loop();
+
+        c1.testAssert(1, 1, 0, 0);
+        c2.testAssert(0, 0, 0, 0);
+
+        sched.add(c2);
+        sched.loop();
+        c1.testAssert(1, 2, 2, 0, 1);
+        c2.testAssert(1, 1, 1, 0, 0);
+
+        sched.loop();
+        c1.testAssert(1, 2,0, 1);
+        c2.testAssert(1, 2,0, 0);
+
+        c2.isFinished = true;
+        sched.loop();
+        c1.testAssert(1, 2,0, 1);
+        c2.testAssert(1, 3,1, 0);
+
+        sched.loop();
+        c1.testAssert(2, 3,0, 1);
+        c2.testAssert(1, 3,1, 0);
+
+    }
 }
