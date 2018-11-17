@@ -294,6 +294,49 @@ public class SchedulerCommandTest {
     }
 
     @Test
+    public void shouldEndParallelAnyWhenSimultaneousFinish() {
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        DebugCommand c3 = new DebugCommand();
+
+        Command par = any(c1, c2, c3);
+
+        sched.init();
+
+        sched.loop();
+        assertFalse(par.isRunning());
+        c1.testAssert(0, 0, 0, 0, 0);
+        c2.testAssert(0, 0, 0, 0, 0);
+        c3.testAssert(0, 0, 0, 0, 0);
+
+        sched.add(par);
+
+        sched.loop();
+        assertTrue(par.isRunning());
+        c1.testAssert(1, 1, 0, 0);
+        c2.testAssert(1, 1, 0, 0);
+        c3.testAssert(1, 1, 0, 0);
+
+        sched.loop();
+        c1.testAssert(1, 2, 0, 0);
+        c2.testAssert(1, 2, 0, 0);
+        c3.testAssert(1, 2, 0, 0);
+
+        c1.isFinished = true;
+        c3.isFinished = true;
+        sched.loop();
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 3, 0, 1);
+        c3.testAssert(1, 3, 1, 0);
+
+        sched.loop();
+        assertFalse(par.isRunning());
+        c1.testAssert(1, 3, 1, 0);
+        c2.testAssert(1, 3, 0, 1);
+        c3.testAssert(1, 3, 1, 0);
+    }
+
+    @Test
     public void shouldInterruptDefaultCommandWhenAddedNewCommand() {
         sched.inTeleop = false;
         DebugSubsystem s = new DebugSubsystem();
