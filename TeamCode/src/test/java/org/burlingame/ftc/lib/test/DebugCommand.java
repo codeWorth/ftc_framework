@@ -3,6 +3,7 @@ package org.burlingame.ftc.lib.test;
 import junit.framework.Assert;
 
 import org.burlingame.ftc.lib.commands.Command;
+import org.burlingame.ftc.lib.subsystem.Subsystem;
 
 public class DebugCommand extends Command {
 
@@ -12,6 +13,11 @@ public class DebugCommand extends Command {
     public int endCalled = 0;
     public int interruptedCalled = 0;
     public boolean isFinished = false;
+
+    @Override
+    public void require(Subsystem subsystem) {
+        super.require(subsystem);
+    }
 
     public void testAssert(int init, int exec, int fin, int end, int inter) {
         Assert.assertEquals(init, initCalled);

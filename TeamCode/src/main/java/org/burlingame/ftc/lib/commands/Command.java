@@ -27,11 +27,11 @@ public abstract class Command {
         return new SequenceGroup(this, other);
     }
 
-    public void require(Subsystem subsystem) {
+    protected void require(Subsystem subsystem) {
         requiredSubsystems.add(subsystem);
     }
 
-    public void require(Collection<Subsystem> subsystems) {
+    protected void require(Collection<Subsystem> subsystems) {
         requiredSubsystems.addAll(subsystems);
     }
 

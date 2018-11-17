@@ -88,6 +88,9 @@ public class Scheduler {
         inTeleop = false;
     }
 
+    /**
+     * Remove all commands.
+     */
     public void clearCommands() {
         newCommands.clear();
         for (Command cmd = sentinel.next; cmd != sentinel; cmd = cmd.next) {
@@ -95,6 +98,14 @@ public class Scheduler {
         }
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
+    }
+
+    /**
+     * Reset entire scheduler to default state (no commands, no subsystems)
+     */
+    public void reset() {
+        clearCommands();
+        subsystems.clear();
     }
 
     private class SentinelNode extends Command {
