@@ -17,12 +17,8 @@ public abstract class Command {
     Command next = null;
     Command prev = null;
 
-    public Command and(Command other) {
-        return new ParallelGroup(this, other);
-    }
-
     public Command then(Command other) {
-        return new SequenceGroup(this, other);
+        return new Sequential(this, other);
     }
 
     protected void require(Subsystem subsystem) {

@@ -10,6 +10,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.burlingame.ftc.lib.commands.Parallel.all;
+import static org.burlingame.ftc.lib.commands.Parallel.any;
 
 public class SchedulerCommandTest {
 
@@ -99,12 +101,12 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void testParallelCommands() {
+    public void testParallelAll() {
         DebugCommand c1 = new DebugCommand();
         DebugCommand c2 = new DebugCommand();
         DebugCommand c3 = new DebugCommand();
 
-        Command c = c1.and(c2).and(c3);
+        Command c = all(c1, c2, c3);
 
         sched.init();
 
@@ -150,7 +152,49 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void testSequentialCommands() {
+    public void testParallelAny() {
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        DebugCommand c3 = new DebugCommand();
+
+        Command par = any(c1, c2, c3);
+
+        sched.init();
+
+        sched.loop();
+        assertFalse(par.isRunning());
+        c1.testAssert(0, 0, 0, 0, 0);
+        c2.testAssert(0, 0, 0, 0, 0);
+        c3.testAssert(0, 0, 0, 0, 0);
+
+        sched.add(par);
+
+        sched.loop();
+        assertTrue(par.isRunning());
+        c1.testAssert(1, 1, 0, 0);
+        c2.testAssert(1, 1, 0, 0);
+        c3.testAssert(1, 1, 0, 0);
+
+        sched.loop();
+        c1.testAssert(1, 2, 0, 0);
+        c2.testAssert(1, 2, 0, 0);
+        c3.testAssert(1, 2, 0, 0);
+
+        c2.isFinished = true;
+        sched.loop();
+        c1.testAssert(1, 3, 0, 1);
+        c2.testAssert(1, 3, 1, 0);
+        c3.testAssert(1, 3, 0, 1);
+
+        sched.loop();
+        assertFalse(par.isRunning());
+        c1.testAssert(1, 3, 0, 1);
+        c2.testAssert(1, 3, 1, 0);
+        c3.testAssert(1, 3, 0, 1);
+    }
+
+    @Test
+    public void testSequential() {
         DebugCommand c1 = new DebugCommand();
         DebugCommand c2 = new DebugCommand();
         DebugCommand c3 = new DebugCommand();
@@ -352,14 +396,44 @@ public class SchedulerCommandTest {
     }
 
     @Test
-    public void shouldInterruptParallelWhenAddedNewCommand() {
+    public void shouldInterruptParallelAllWhenAddedNewCommand() {
         DebugSubsystem s = new DebugSubsystem();
         DebugCommand c1 = new DebugCommand();
         DebugCommand c2 = new DebugCommand();
         DebugCommand c3 = new DebugCommand();
         c1.require(s);
         c3.require(s);
-        Command par = c1.and(c2);
+        Command par = all(c1, c2);
+        sched.registerSubsystem(s);
+
+        sched.add(par);
+        sched.loop();
+        assertEquals(par, s.currentCommand);
+        assertTrue(par.isRunning());
+        assertTrue(c1.isRunning());
+        assertTrue(c2.isRunning());
+        assertFalse(c3.isRunning());
+
+        sched.add(c3);
+        sched.loop();
+        assertEquals(c3, s.currentCommand);
+        assertTrue(c1.interruptedCalled > 0);
+        assertTrue(c2.interruptedCalled > 0);
+        assertFalse(par.isRunning());
+        assertFalse(c1.isRunning());
+        assertFalse(c2.isRunning());
+        assertTrue(c3.isRunning());
+    }
+
+    @Test
+    public void shouldInterruptParallelAnyWhenAddedNewCommand() {
+        DebugSubsystem s = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        DebugCommand c3 = new DebugCommand();
+        c1.require(s);
+        c3.require(s);
+        Command par = any(c1, c2);
         sched.registerSubsystem(s);
 
         sched.add(par);
@@ -429,7 +503,7 @@ public class SchedulerCommandTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldErrorWhenParallelCommandsHaveIntersectingSubsystemRequirements() {
+    public void shouldErrorWhenParallelAllHasIntersectingSubsystemRequirements() {
         DebugSubsystem s1 = new DebugSubsystem();
         DebugSubsystem s2 = new DebugSubsystem();
         DebugSubsystem s3 = new DebugSubsystem();
@@ -440,7 +514,37 @@ public class SchedulerCommandTest {
         c2.require(s2);
         c2.require(s3);
 
-        c1.and(c2);
+        all(c1, c2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldErrorWhenParallelAnyHasIntersectingSubsystemRequirements() {
+        DebugSubsystem s1 = new DebugSubsystem();
+        DebugSubsystem s2 = new DebugSubsystem();
+        DebugSubsystem s3 = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s1);
+        c1.require(s2);
+        c2.require(s2);
+        c2.require(s3);
+
+        any(c1, c2);
+    }
+
+    @Test
+    public void shouldNotErrorWhenSequentialHasIntersectingSubsystemRequirements() {
+        DebugSubsystem s1 = new DebugSubsystem();
+        DebugSubsystem s2 = new DebugSubsystem();
+        DebugSubsystem s3 = new DebugSubsystem();
+        DebugCommand c1 = new DebugCommand();
+        DebugCommand c2 = new DebugCommand();
+        c1.require(s1);
+        c1.require(s2);
+        c2.require(s2);
+        c2.require(s3);
+
+        c1.then(c2);
     }
 
 }

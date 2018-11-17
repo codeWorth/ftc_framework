@@ -4,21 +4,31 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class SequenceGroup extends Command {
+public class Sequential extends Command {
 
     private List<Command> children = new LinkedList<>();
     private ListIterator<Command> iterator;
     private Command current;
     private boolean finished = false;
 
-    SequenceGroup(Command first, Command second) {
-        this.then(first).then(second);
+    Sequential(Command... commands) {
+        for (Command cmd: commands) {
+            addCommand(cmd);
+        }
+    }
+
+    public static Command seq(Command... commands) {
+        return new Sequential(commands);
+    }
+
+    private void addCommand(Command other) {
+        children.add(other);
+        require(other.requiredSubsystems);
     }
 
     @Override
-    public SequenceGroup then(Command other) {
-        children.add(other);
-        require(other.requiredSubsystems);
+    public Sequential then(Command other) {
+        addCommand(other);
         return this;
     }
 
