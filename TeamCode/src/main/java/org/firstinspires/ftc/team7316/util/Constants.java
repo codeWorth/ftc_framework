@@ -20,6 +20,9 @@ public class Constants {
     public static final double SLOW_SPEED = 0.6;
     public static final long CLIMB_MOTOR_EXTENDED=-5200;
     public static final long CLIMB_MOTOR_COMPACTED=-1000;
+    public static final double TRAY_SERVO_EXTENDED=1;
+    public static final double TRAY_SERVO_RETRACTED=0;
+    public static final double TRAY_ANGLE_SERVO_RETRACTED=0;
 
     public static final int DISTANCE_ERROR_RANGE_TICKS = 10;
     public static final double ACCELERATION_SPEED = 0.2;
@@ -37,6 +40,7 @@ public class Constants {
     public static final double TURN_P_RIGHT = 0.018;
     public static final double TURN_DEADZONE_LEFT = 0.15;
     public static final double TURN_DEADZONE_RIGHT = 0.1;
+    public static final double TRAY_DEADZONE=0.2;
     public static final double TURN_I = 0;
     public static final double TURN_D = 0; //0.005;
     public static final double TURN_M = 551;

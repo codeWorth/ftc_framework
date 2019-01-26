@@ -15,13 +15,17 @@ public class Subsystems {
     public ClimberSubsystem climberSubsystem;
     public PlateSubsystem plateSubsystem;
     public IntakeSubsystem intakeSubsystem;
+    public IntakeExtendSubsystem intakeExtendSubsystem;
+    public TraySubsystem traySubsystem;
 
     private Subsystems () {
+        intakeExtendSubsystem = new IntakeExtendSubsystem();
         plateSubsystem=new PlateSubsystem();
         climberSubsystem=new ClimberSubsystem();
         driveSubsystem = new DriveSubsystem();
         intakeSubsystem = new IntakeSubsystem();
-        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem,intakeSubsystem};
+        traySubsystem= new TraySubsystem();
+        subsystems = new Subsystem[]{driveSubsystem,climberSubsystem,plateSubsystem,intakeSubsystem,intakeExtendSubsystem,traySubsystem};
     }
 
     public static void createSubsystems() {
