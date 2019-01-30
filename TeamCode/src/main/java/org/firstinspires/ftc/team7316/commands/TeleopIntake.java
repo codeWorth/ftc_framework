@@ -17,7 +17,7 @@ public class TeleopIntake extends Command {
     public void loop() {
 
         double power = OI.instance.gp2.left_stick.getY();
-        Hardware.instance.intakemotor.setPower(power);
+        Hardware.instance.intakeServo.setPower(power);
 
     }
 

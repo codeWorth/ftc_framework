@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team7316.util.motorwrappers.DCMotorWrapper;
@@ -36,6 +37,7 @@ public class Hardware {
     public Servo trayAngleServo;
     public CRServo intakeServo;
     public BNO055IMU imu;
+    public TouchSensor climbSwitch;
 
     public DCMotorWrapper leftmotorWrapper;
     public DCMotorWrapper rightmotorWrapper;
@@ -57,6 +59,7 @@ public class Hardware {
     public final String ExtendMotorRightName = "ermotor";
     public final String imuname = "gyro";
     public final String intakeServoName = "iservo";
+    public final String climbSwitchName = "clswitch";
 
     /**
      * Initialize all the hardware fields here
@@ -93,6 +96,7 @@ public class Hardware {
         trayExtendServoRight=map.servo.get(trayExtendServoRightName);
         trayAngleServo=map.servo.get(trayAngleServoName);
         BNO055IMU.Parameters gyroParams = new BNO055IMU.Parameters();
+        climbSwitch = map.touchSensor.get(climbSwitchName);
         gyroParams.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         gyroParams.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         gyroParams.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
