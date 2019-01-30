@@ -40,7 +40,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Camera;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.wifi.WifiManager;
@@ -55,13 +54,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
 import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
@@ -98,13 +102,18 @@ import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.wifi.NetworkConnection;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
+import com.serenegiant.usb.CameraDialog;
+import com.serenegiant.usb.USBMonitor;
+import com.serenegiant.usb.UVCCamera;
 
 import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
+import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManagerFactory;
+import org.firstinspires.ftc.robotcore.internal.network.WifiDirectDeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
 import org.firstinspires.ftc.robotcore.internal.network.StartResult;
 import org.firstinspires.ftc.robotcore.internal.network.WifiMuteEvent;
@@ -119,98 +128,24 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCameraView;
-import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.OpenCVLoader;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ftc.vision.SimpleFrameGrabber;
-
 @SuppressWarnings("WeakerAccess")
-public class FtcRobotControllerActivity extends Activity
+public class FtcRobotControllerActivity extends BaseActivity implements CameraDialog.CameraDialogParent
 {
+    private static final boolean DEBUG = true;	// TODO set false when production
 
-  static final int FRAME_WIDTH_REQUEST = 176*4;
-  static final int FRAME_HEIGHT_REQUEST = 144*4;
-
-    //manages getting one frame at a time
-    public static SimpleFrameGrabber frameGrabber = null;
-
-    ////////////// START VISION PROCESSING CODE //////////////
-
-    // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
-    private CameraBridgeViewBase cameraBridgeViewBase;
-
-    void myOnCreate(final TextView outputView){
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        cameraBridgeViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
-        frameGrabber = new SimpleFrameGrabber(cameraBridgeViewBase, FRAME_WIDTH_REQUEST, FRAME_HEIGHT_REQUEST);
-    }
-
-    //when the "Grab" button is pressed
-    public void frameButtonOnClick(View v){
-        CameraBridgeViewBase.SHOULD_DISPLAY_FRAME = !CameraBridgeViewBase.SHOULD_DISPLAY_FRAME;
-    }
-
-    void myOnPause(){
-        if (cameraBridgeViewBase != null) {
-            cameraBridgeViewBase.disableView();
-        }
-    }
-
-    void myOnResume(){
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
-        } else {
-            Log.d(TAG, "OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
-    }
-
-    public void myOnDestroy() {
-        if (cameraBridgeViewBase != null) {
-            cameraBridgeViewBase.disableView();
-        }
-    }
-
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                    Log.i(TAG, "OpenCV Manager Connected");
-                    //from now onwards, you can use OpenCV API
-//          Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
-                    cameraBridgeViewBase.enableView();
-                    break;
-                case LoaderCallbackInterface.INIT_FAILED:
-                    Log.i(TAG, "Init Failed");
-                    break;
-                case LoaderCallbackInterface.INSTALL_CANCELED:
-                    Log.i(TAG, "Install Cancelled");
-                    break;
-                case LoaderCallbackInterface.INCOMPATIBLE_MANAGER_VERSION:
-                    Log.i(TAG, "Incompatible Version");
-                    break;
-                case LoaderCallbackInterface.MARKET_ERROR:
-                    Log.i(TAG, "Market Error");
-                    break;
-                default:
-                    Log.i(TAG, "OpenCV Manager Install");
-                    super.onManagerConnected(status);
-                    break;
-            }
-        }
-    };
-
-    ////////////// END VISION PROCESSING CODE //////////////
+    private final Object mSync = new Object();
+    // for accessing USB and USB camera
+    private USBMonitor mUSBMonitor;
+    private UVCCamera mUVCCamera;
+    private SurfaceView mUVCCameraView;
+    // for open&start / stop&close camera preview
+    private Button mCameraButton;
+    private Surface mPreviewSurface;
+    private boolean isActive, isPreview;
 
     public static final String TAG = "RCActivity";
     public String getTag() { return TAG; }
@@ -253,6 +188,157 @@ public class FtcRobotControllerActivity extends Activity
 
     protected WifiMuteStateMachine wifiMuteStateMachine;
     protected MotionDetection motionDetection;
+
+    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View view) {
+            if (mUVCCamera == null) {
+                // XXX calling CameraDialog.showDialog is necessary at only first time(only when app has no permission).
+                CameraDialog.showDialog(FtcRobotControllerActivity.this);
+            } else {
+                synchronized (mSync) {
+                    mUVCCamera.destroy();
+                    mUVCCamera = null;
+                    isActive = isPreview = false;
+                }
+            }
+        }
+    };
+
+    private final USBMonitor.OnDeviceConnectListener mOnDeviceConnectListener = new USBMonitor.OnDeviceConnectListener() {
+        @Override
+        public void onAttach(final UsbDevice device) {
+            if (DEBUG) Log.v(TAG, "onAttach:");
+            Toast.makeText(FtcRobotControllerActivity.this, "USB_DEVICE_ATTACHED", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onConnect(final UsbDevice device, final USBMonitor.UsbControlBlock ctrlBlock, final boolean createNew) {
+            if (DEBUG) Log.v(TAG, "onConnect:");
+            synchronized (mSync) {
+                if (mUVCCamera != null) {
+                    mUVCCamera.destroy();
+                }
+                isActive = isPreview = false;
+            }
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (mSync) {
+                        final UVCCamera camera = new UVCCamera();
+                        camera.open(ctrlBlock);
+                        if (DEBUG) Log.i(TAG, "supportedSize:" + camera.getSupportedSize());
+                        try {
+                            camera.setPreviewSize(UVCCamera.DEFAULT_PREVIEW_WIDTH, UVCCamera.DEFAULT_PREVIEW_HEIGHT, UVCCamera.FRAME_FORMAT_MJPEG);
+                        } catch (final IllegalArgumentException e) {
+                            try {
+                                // fallback to YUV mode
+                                camera.setPreviewSize(UVCCamera.DEFAULT_PREVIEW_WIDTH, UVCCamera.DEFAULT_PREVIEW_HEIGHT, UVCCamera.DEFAULT_PREVIEW_MODE);
+                            } catch (final IllegalArgumentException e1) {
+                                camera.destroy();
+                                return;
+                            }
+                        }
+                        mPreviewSurface = mUVCCameraView.getHolder().getSurface();
+                        if (mPreviewSurface != null) {
+                            isActive = true;
+                            camera.setPreviewDisplay(mPreviewSurface);
+                            camera.startPreview();
+                            isPreview = true;
+                        }
+                        synchronized (mSync) {
+                            mUVCCamera = camera;
+                        }
+                    }
+                }
+            }, 0);
+        }
+
+        @Override
+        public void onDisconnect(final UsbDevice device, final USBMonitor.UsbControlBlock ctrlBlock) {
+            if (DEBUG) Log.v(TAG, "onDisconnect:");
+            // XXX you should check whether the comming device equal to camera device that currently using
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (mSync) {
+                        if (mUVCCamera != null) {
+                            mUVCCamera.close();
+                            if (mPreviewSurface != null) {
+                                mPreviewSurface.release();
+                                mPreviewSurface = null;
+                            }
+                            isActive = isPreview = false;
+                        }
+                    }
+                }
+            }, 0);
+        }
+
+        @Override
+        public void onDettach(final UsbDevice device) {
+            if (DEBUG) Log.v(TAG, "onDettach:");
+            Toast.makeText(FtcRobotControllerActivity.this, "USB_DEVICE_DETACHED", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(final UsbDevice device) {
+        }
+    };
+
+    /**
+     * to access from CameraDialog
+     * @return
+     */
+    @Override
+    public USBMonitor getUSBMonitor() {
+        return mUSBMonitor;
+    }
+
+    @Override
+    public void onDialogResult(boolean canceled) {
+        if (canceled) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // FIXME
+                }
+            }, 0);
+        }
+    }
+
+    private final SurfaceHolder.Callback mSurfaceViewCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(final SurfaceHolder holder) {
+            if (DEBUG) Log.v(TAG, "surfaceCreated:");
+        }
+
+        @Override
+        public void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height) {
+            if ((width == 0) || (height == 0)) return;
+            if (DEBUG) Log.v(TAG, "surfaceChanged:");
+            mPreviewSurface = holder.getSurface();
+            synchronized (mSync) {
+                if (isActive && !isPreview && (mUVCCamera != null)) {
+                    mUVCCamera.setPreviewDisplay(mPreviewSurface);
+                    mUVCCamera.startPreview();
+                    isPreview = true;
+                }
+            }
+        }
+
+        @Override
+        public void surfaceDestroyed(final SurfaceHolder holder) {
+            if (DEBUG) Log.v(TAG, "surfaceDestroyed:");
+            synchronized (mSync) {
+                if (mUVCCamera != null) {
+                    mUVCCamera.stopPreview();
+                }
+                isPreview = false;
+            }
+            mPreviewSurface = null;
+        }
+    };
 
     protected class RobotRestarter implements Restarter {
 
@@ -333,7 +419,8 @@ public class FtcRobotControllerActivity extends Activity
                 RobotLog.vv(TAG, "disabling Dragonboard and exiting robot controller");
                 DragonboardLynxDragonboardIsPresentPin.getInstance().setState(false);
                 AppUtil.getInstance().finishRootActivityAndExitApp();
-            } else {
+            }
+            else {
                 // Double-sure check that we can talk to the DB over the serial TTY
                 DragonboardLynxDragonboardIsPresentPin.getInstance().setState(true);
             }
@@ -351,9 +438,13 @@ public class FtcRobotControllerActivity extends Activity
 
         setContentView(R.layout.activity_ftc_controller);
 
-        ////////////// START VISION PROCESSING CODE //////////////
-        myOnCreate((TextView) findViewById(R.id.resultText));
-        ////////////// END VISION PROCESSING CODE //////////////
+        mCameraButton = findViewById(R.id.camera_button);
+        mCameraButton.setOnClickListener(mOnClickListener);
+
+        mUVCCameraView = findViewById(R.id.camera_surface_view);
+        mUVCCameraView.getHolder().addCallback(mSurfaceViewCallback);
+
+        mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
 
         preferencesHelper = new PreferencesHelper(TAG, context);
         preferencesHelper.writeBooleanPrefIfDifferent(context.getString(R.string.pref_rc_connected), true);
@@ -375,6 +466,8 @@ public class FtcRobotControllerActivity extends Activity
                 popupMenu.show();
             }
         });
+
+        updateMonitorLayout(getResources().getConfiguration());
 
         BlocksOpMode.setActivityAndWebView(this, (WebView) findViewById(R.id.webViewBlocksRuntime));
 
@@ -447,6 +540,13 @@ public class FtcRobotControllerActivity extends Activity
         super.onStart();
         RobotLog.vv(TAG, "onStart()");
 
+        if (DEBUG) Log.v(TAG, "onStart:");
+        synchronized (mSync) {
+            if (mUSBMonitor != null) {
+                mUSBMonitor.register();
+            }
+        }
+
         // If we're start()ing after a stop(), then shut the old robot down so
         // we can refresh it with new state (e.g., with new hw configurations)
         shutdownRobot();
@@ -467,22 +567,12 @@ public class FtcRobotControllerActivity extends Activity
     @Override
     protected void onResume() {
         super.onResume();
-
-        ////////////// START VISION PROCESSING CODE //////////////
-        myOnResume();
-        ////////////// END VISION PROCESSING CODE //////////////
-
         RobotLog.vv(TAG, "onResume()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        ////////////// START VISION PROCESSING CODE //////////////
-        myOnPause();
-        ////////////// END VISION PROCESSING CODE //////////////
-
         RobotLog.vv(TAG, "onPause()");
         if (programmingModeController.isActive()) {
             programmingModeController.stopProgrammingMode();
@@ -493,18 +583,36 @@ public class FtcRobotControllerActivity extends Activity
     protected void onStop() {
         // Note: this gets called even when the configuration editor is launched. That is, it gets
         // called surprisingly often. So, we don't actually do much here.
+
+        if (DEBUG) Log.v(TAG, "onStop:");
+        synchronized (mSync) {
+            if (mUSBMonitor != null) {
+                mUSBMonitor.unregister();
+            }
+        }
+
         super.onStop();
         RobotLog.vv(TAG, "onStop()");
     }
 
     @Override
     protected void onDestroy() {
+        if (DEBUG) Log.v(TAG, "onDestroy:");
+        synchronized (mSync) {
+            isActive = isPreview = false;
+            if (mUVCCamera != null) {
+                mUVCCamera.destroy();
+                mUVCCamera = null;
+            }
+            if (mUSBMonitor != null) {
+                mUSBMonitor.destroy();
+                mUSBMonitor = null;
+            }
+        }
+        mUVCCameraView = null;
+        mCameraButton = null;
+
         super.onDestroy();
-
-        ////////////// START VISION PROCESSING CODE //////////////
-        myOnDestroy();
-        ////////////// END VISION PROCESSING CODE //////////////
-
         RobotLog.vv(TAG, "onDestroy()");
 
         shutdownRobot();  // Ensure the robot is put away to bed
@@ -661,6 +769,31 @@ public class FtcRobotControllerActivity extends Activity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // don't destroy assets on screen rotation
+        updateMonitorLayout(newConfig);
+    }
+
+    /**
+     * Updates the orientation of monitorContainer (which contains cameraMonitorView and
+     * tfodMonitorView) based on the given configuration. Makes the children split the space.
+     */
+    private void updateMonitorLayout(Configuration configuration) {
+        LinearLayout monitorContainer = (LinearLayout) findViewById(R.id.monitorContainer);
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // When the phone is landscape, lay out the monitor views horizontally.
+            monitorContainer.setOrientation(LinearLayout.HORIZONTAL);
+            for (int i = 0; i < monitorContainer.getChildCount(); i++) {
+                View view = monitorContainer.getChildAt(i);
+                view.setLayoutParams(new LayoutParams(0, LayoutParams.MATCH_PARENT, 1 /* weight */));
+            }
+        } else {
+            // When the phone is portrait, lay out the monitor views vertically.
+            monitorContainer.setOrientation(LinearLayout.VERTICAL);
+            for (int i = 0; i < monitorContainer.getChildCount(); i++) {
+                View view = monitorContainer.getChildAt(i);
+                view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 0, 1 /* weight */));
+            }
+        }
+        monitorContainer.requestLayout();
     }
 
     @Override

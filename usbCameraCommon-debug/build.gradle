@@ -1,2 +1,26 @@
 configurations.maybeCreate("default")
 artifacts.add("default", file('usbCameraCommon-debug.aar'))
+
+apply plugin: 'com.android.library'
+
+android {
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+    }
+
+    compileSdkVersion 27
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation("com.serenegiant:common:${commonLibVersion}") {
+        exclude module: 'support-v4'
+        exclude module: 'support-annotations'
+    }
+}

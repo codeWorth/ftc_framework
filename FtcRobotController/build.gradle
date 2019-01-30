@@ -28,11 +28,16 @@ apply from: 'build.release.gradle'
 
 dependencies {
     implementation project(':openCVLibrary310')
-
+    implementation(project(':usbCameraCommon-debug')) {
+        transitive = true
+    }
     implementation(project(':libuvccamera-debug')) {
         transitive = true
     }
 
-    
+    implementation("com.serenegiant:common:${commonLibVersion}") {
+        exclude module: 'support-v4'
+        exclude module: 'support-annotations'
+    }
 }
 

@@ -1,4 +1,4 @@
-include ':FtcRobotController', ':usbCameraCommon-debug'
+include ':FtcRobotController', ':usbCameraCommon-debug', ':libuvccamera-debug'
 include ':TeamCode'
 include ':openCVLibrary343'
 include ':openCVLibrary310'
