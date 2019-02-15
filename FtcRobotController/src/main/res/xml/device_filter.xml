@@ -48,8 +48,5 @@ https://developer.android.com/guide/topics/connectivity/usb/host
 <!--</resources>-->
 
 <usb>
-   <usb-device vendor-id="1027" product-id="24577" /> <!-- FT232 Modern Robotics: 0x0403/0x6001 -->
-   <usb-device vendor-id="1027" product-id="24597" /> <!-- FT232 Lynx: 0x0403/0x6015 -->
-
    <usb-device class="239" subclass="2" />	<!-- all device of UVC -->
 </usb>

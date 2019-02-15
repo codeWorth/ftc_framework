@@ -103,6 +103,7 @@ import com.qualcomm.robotcore.wifi.NetworkConnection;
 import com.qualcomm.robotcore.wifi.NetworkConnectionFactory;
 import com.qualcomm.robotcore.wifi.NetworkType;
 import com.serenegiant.usb.CameraDialog;
+import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.UVCCamera;
 
@@ -128,9 +129,15 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
 
+import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import ftc.vision.ImageProcess;
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends BaseActivity implements CameraDialog.CameraDialogParent
@@ -175,6 +182,7 @@ public class FtcRobotControllerActivity extends BaseActivity implements CameraDi
     protected TextView textOpMode;
     protected TextView textErrorMessage;
     protected ImmersiveMode immersion;
+    protected TextView resultTextView;
 
     protected UpdateUI updateUI;
     protected Dimmer dimmer;
@@ -227,6 +235,30 @@ public class FtcRobotControllerActivity extends BaseActivity implements CameraDi
                     synchronized (mSync) {
                         final UVCCamera camera = new UVCCamera();
                         camera.open(ctrlBlock);
+                        camera.setFrameCallback(new IFrameCallback() {
+
+                            ImageProcess imgProc = new ImageProcess();
+
+                            @Override
+                            public void onFrame(ByteBuffer byteBuffer) {
+                                byte[] byteArray = new byte[byteBuffer.remaining()];
+                                byteBuffer.get(byteArray);
+                                Mat mat = new Mat(UVCCamera.DEFAULT_PREVIEW_HEIGHT, UVCCamera.DEFAULT_PREVIEW_WIDTH, CvType.CV_8UC4);
+                                mat.put(0, 0, byteArray);
+
+                                Mat cheddarMat = imgProc.processImage(mat);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (cheddarMat != null) {
+                                            resultTextView.setText("CUBE IS HEre");
+                                        } else {
+                                            resultTextView.setText("CUBE IS not HEre");
+                                        }
+                                    }
+                                });
+                            }
+                        }, UVCCamera.PIXEL_FORMAT_RGBX);
                         if (DEBUG) Log.i(TAG, "supportedSize:" + camera.getSupportedSize());
                         try {
                             camera.setPreviewSize(UVCCamera.DEFAULT_PREVIEW_WIDTH, UVCCamera.DEFAULT_PREVIEW_HEIGHT, UVCCamera.FRAME_FORMAT_MJPEG);
@@ -405,6 +437,15 @@ public class FtcRobotControllerActivity extends BaseActivity implements CameraDi
         RobotLog.onApplicationStart();  // robustify against onCreate() following onDestroy() but using the same app instance, which apparently does happen
         RobotLog.vv(TAG, "onCreate()");
         ThemedActivity.appAppThemeToActivity(getTag(), this); // do this way instead of inherit to help AppInventor
+        if (OpenCVLoader.initDebug()) {
+            for (int i = 0; i < 10; i++) {
+                Log.d("ITS OPENCV", "OPEN OPEN CV OPEN OPEN GOOD");
+            }
+        } else {
+            for (int i = 0; i < 10; i++) {
+                Log.d("ITS OPENCV", "CLOSED CLOSED OPEN CV OPEN CLOSED BAD");
+            }
+        }
 
         // Oddly, sometimes after a crash & restart the root activity will be something unexpected, like from the before crash? We don't yet understand
         RobotLog.vv(TAG, "rootActivity is of class %s", AppUtil.getInstance().getRootActivity().getClass().getSimpleName());
@@ -440,6 +481,8 @@ public class FtcRobotControllerActivity extends BaseActivity implements CameraDi
 
         mCameraButton = findViewById(R.id.camera_button);
         mCameraButton.setOnClickListener(mOnClickListener);
+
+        resultTextView = findViewById(R.id.resultText);
 
         mUVCCameraView = findViewById(R.id.camera_surface_view);
         mUVCCameraView.getHolder().addCallback(mSurfaceViewCallback);
